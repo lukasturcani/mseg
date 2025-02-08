@@ -10,8 +10,6 @@ import polars as pl
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from pyearth import Earth
-
 
 def read_data(path: Path) -> pl.DataFrame:
     """Read data from a path."""
@@ -38,47 +36,4 @@ def line_plot(data: pl.DataFrame) -> None:
     fig.show()
 
 
-def pyearth(model: Earth, data: pl.DataFrame) -> Earth:
-    x = data["time"].to_numpy().reshape(-1, 1)
-    y = data["power"].to_numpy()
-
-    # Fit an Earth model
-    model.fit(x, y)
-
-    # Print the model
-    print(model.trace())  # noqa: T201
-    print(model.summary())  # noqa: T201
-
-    # Plot the model
-    y_hat = model.predict(x)
-    fig = px.scatter()
-    fig.add_scatter(
-        x=x.flatten(),
-        y=y,
-        mode="markers",
-        name="Actual",
-        marker={"color": "red"},
-    )
-    fig.add_scatter(
-        x=x.flatten(),
-        y=y_hat,
-        mode="markers",
-        name="Predicted",
-        marker={"color": "blue"},
-    )
-    fig.update_layout(
-        title="PyEarth Example", xaxis_title="time", yaxis_title="power"
-    )
-    fig.show()
-    return model
-
-
-def knots(model: Earth) -> list[float]:
-    return sorted(
-        bf.get_knot()
-        for bf in model.basis_
-        if hasattr(bf, "get_knot") and not bf.is_pruned()
-    )
-
-
-__all__ = ["read_data"]
+__all__ = ["line_plot", "read_data", "scatter_plot"]
