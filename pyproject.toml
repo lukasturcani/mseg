@@ -23,6 +23,7 @@ dev = [
   "sphinx",
   "sphinx-copybutton",
   "furo",
+  "notebook>=7.3.2",
 ]
 
 [project.urls]
