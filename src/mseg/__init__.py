@@ -1,21 +1,12 @@
 """Segmentation analysis."""
 
-from dataclasses import dataclass
 from pathlib import Path
 
-
-@dataclass(slots=True)
-class Data:
-    """A dataset."""
-
-    xs: list[float]
-    """The x coordinates of the data points."""
-    ys: list[float]
-    """The y coordinates of the data points."""
+import polars as pl
 
 
-def load_data(path: Path) -> Data:
-    """Load data from a file."""
+def read_data(path: Path) -> pl.DataFrame:
+    """Read data from a path."""
     content = path.read_text()
     lines = content.splitlines()
     xs = []
@@ -24,10 +15,7 @@ def load_data(path: Path) -> Data:
         x, y = line.split()
         xs.append(float(x))
         ys.append(float(y))
-    return Data(xs, ys)
+    return pl.DataFrame({"x": xs, "y": ys})
 
 
-__all__ = [
-    "Data",
-    "load_data",
-]
+__all__ = ["read_data"]
