@@ -34,13 +34,9 @@ def line_plot(data: pl.DataFrame) -> None:
     fig.show()
 
 
-def pyearth() -> None:
-    # Create some fake data
-    np.random.seed(0)
-    m = 1000
-    n = 10
-    X = 80 * np.random.uniform(size=(m, n)) - 40
-    y = np.abs(X[:, 6] - 4.0) + 1 * np.random.normal(size=m)
+def pyearth(data: pl.DataFrame) -> None:
+    X = data["time"].to_numpy().reshape(-1, 1)
+    y = data["power"].to_numpy()
 
     # Fit an Earth model
     model = Earth()
