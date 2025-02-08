@@ -7,10 +7,11 @@ from typing import TYPE_CHECKING
 import plotly.express as px
 import polars as pl
 from matplotlib import pyplot as plt
-from pyearth import Earth
 
 if TYPE_CHECKING:
     from pathlib import Path
+
+    from pyearth import Earth
 
 
 def read_data(path: Path) -> pl.DataFrame:
