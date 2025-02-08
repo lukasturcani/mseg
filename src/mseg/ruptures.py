@@ -1,15 +1,21 @@
 """Ruptures tools."""
 
-import polars as pl
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import ruptures as rpt
 from plotly import graph_objects as go
 
+if TYPE_CHECKING:
+    import polars as pl
 
-def ruptures(data: pl.DataFrame) -> None:
+
+def ruptures(data: pl.DataFrame, *, pen: int = 10) -> list[float]:
     """Detect change points using ruptures."""
     signal = data["power"].to_numpy()
     algo = rpt.Pelt(model="l2").fit(signal)
-    breakpoints = algo.predict(pen=10)
+    breakpoints = algo.predict(pen=pen)
     change_points = data["time"][breakpoints[:-1]]
 
     fig = go.Figure()
@@ -24,7 +30,6 @@ def ruptures(data: pl.DataFrame) -> None:
     for cp in change_points:
         fig.add_vline(
             x=cp,
-            line_dash="dash",
             line_color="red",
             name="Detected Change Point",
         )
@@ -37,3 +42,4 @@ def ruptures(data: pl.DataFrame) -> None:
         height=600,
     )
     fig.show()
+    return list(change_points)
