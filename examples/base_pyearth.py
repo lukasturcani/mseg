@@ -1,6 +1,7 @@
 import numpy
 from pyearth import Earth
 from matplotlib import pyplot
+from itertools import islice
 
 # Create some fake data
 numpy.random.seed(0)
@@ -17,6 +18,9 @@ model.fit(X, y)
 print(model.trace())
 print(model.summary())
 
+knots = [bf.get_knot() for bf in list(model.basis_)[1:] if not bf.is_pruned()]
+print(f"knots: {knots}")
+
 # Plot the model
 y_hat = model.predict(X)
 pyplot.figure()
@@ -25,12 +29,7 @@ pyplot.plot(X[:, 6], y_hat, "b.")
 pyplot.xlabel("x_6")
 pyplot.ylabel("y")
 pyplot.title("Simple Earth Example")
-# pyplot.show()
+pyplot.show()
 
 basis_functions = model.basis_
 coefficients = model.coef_
-
-
-for bf in list(model.basis_)[1:]:
-    if not bf.is_pruned():
-        print(bf.get_knot())
