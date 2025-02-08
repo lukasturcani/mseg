@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-import polars as pl
 import plotly.express as px
+import polars as pl
 
 
 def read_data(path: Path) -> pl.DataFrame:
@@ -16,18 +16,18 @@ def read_data(path: Path) -> pl.DataFrame:
         x, y = line.split()
         xs.append(float(x))
         ys.append(float(y))
-    return pl.DataFrame({"x": xs, "y": ys})
+    return pl.DataFrame({"time": xs, "power": ys})
 
 
 def scatter_plot(data: pl.DataFrame) -> None:
     """Plot data."""
-    fig = px.scatter(data, x="x", y="y")
+    fig = px.scatter(data, x="time", y="power")
     fig.show()
 
 
 def line_plot(data: pl.DataFrame) -> None:
     """Plot data."""
-    fig = px.line(data, x="x", y="y")
+    fig = px.line(data, x="time", y="power")
     fig.show()
 
 

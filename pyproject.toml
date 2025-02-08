@@ -77,7 +77,9 @@ warn_unreachable = true
 disallow_any_generics = true
 
 [[tool.mypy.overrides]]
-module = []
+module = [
+    "plotly.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
