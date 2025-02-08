@@ -49,3 +49,7 @@ fix:
 # Build a release.
 build:
   uv build
+
+# Run the jupyter notebook server.
+notebook:
+  uv run jupyter notebook
