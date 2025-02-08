@@ -1,12 +1,16 @@
 """Segmentation analysis."""
 
-from pathlib import Path
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import plotly.express as px
-import numpy as np
-from pyearth import Earth
-from matplotlib import pyplot
 import polars as pl
+from matplotlib import pyplot as plt
+from pyearth import Earth
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def read_data(path: Path) -> pl.DataFrame:
@@ -34,27 +38,33 @@ def line_plot(data: pl.DataFrame) -> None:
     fig.show()
 
 
-def pyearth(data: pl.DataFrame) -> None:
-    X = data["time"].to_numpy().reshape(-1, 1)
+def pyearth(data: pl.DataFrame) -> Earth:
+    x = data["time"].to_numpy().reshape(-1, 1)
     y = data["power"].to_numpy()
 
     # Fit an Earth model
     model = Earth()
-    model.fit(X, y)
+    model.fit(x, y)
 
     # Print the model
-    print(model.trace())
-    print(model.summary())
+    print(model.trace())  # noqa: T201
+    print(model.summary())  # noqa: T201
 
     # Plot the model
-    y_hat = model.predict(X)
-    pyplot.figure()
-    pyplot.plot(X, y, "r.")
-    pyplot.plot(X, y_hat, "b.")
-    pyplot.xlabel("time")
-    pyplot.ylabel("power")
-    pyplot.title("Simple Earth Example")
-    pyplot.show()
+    y_hat = model.predict(x)
+    plt.figure()
+    plt.plot(x, y, "r.")
+    plt.plot(x, y_hat, "b.")
+    plt.xlabel("time")
+    plt.ylabel("power")
+    plt.title("Simple Earth Example")
+    plt.show()
+    return model
+
+
+def knots(model: Earth) -> list[float]:
+    basis_functions = model.basis_
+    return [bf.get_knot() for bf in basis_functions]
 
 
 __all__ = ["read_data"]

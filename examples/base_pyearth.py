@@ -25,4 +25,12 @@ pyplot.plot(X[:, 6], y_hat, "b.")
 pyplot.xlabel("x_6")
 pyplot.ylabel("y")
 pyplot.title("Simple Earth Example")
-pyplot.show()
+# pyplot.show()
+
+basis_functions = model.basis_
+coefficients = model.coef_
+
+
+for bf in list(model.basis_)[1:]:
+    if not bf.is_pruned():
+        print(bf.get_knot())
