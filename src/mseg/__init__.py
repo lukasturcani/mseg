@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 import plotly.express as px
 import polars as pl
-from matplotlib import pyplot as plt
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -75,11 +74,11 @@ def pyearth(model: Earth, data: pl.DataFrame) -> Earth:
 
 
 def knots(model: Earth) -> list[float]:
-    return [
+    return sorted(
         bf.get_knot()
         for bf in model.basis_
         if hasattr(bf, "get_knot") and not bf.is_pruned()
-    ]
+    )
 
 
 __all__ = ["read_data"]
