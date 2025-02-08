@@ -52,13 +52,25 @@ def pyearth(model: Earth, data: pl.DataFrame) -> Earth:
 
     # Plot the model
     y_hat = model.predict(x)
-    plt.figure()
-    plt.plot(x, y, "r.")
-    plt.plot(x, y_hat, "b.")
-    plt.xlabel("time")
-    plt.ylabel("power")
-    plt.title("PyEarth Example")
-    plt.show()
+    fig = px.scatter()
+    fig.add_scatter(
+        x=x.flatten(),
+        y=y,
+        mode="markers",
+        name="Actual",
+        marker={"color": "red"},
+    )
+    fig.add_scatter(
+        x=x.flatten(),
+        y=y_hat,
+        mode="markers",
+        name="Predicted",
+        marker={"color": "blue"},
+    )
+    fig.update_layout(
+        title="PyEarth Example", xaxis_title="time", yaxis_title="power"
+    )
+    fig.show()
     return model
 
 
