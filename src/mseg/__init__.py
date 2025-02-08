@@ -38,12 +38,11 @@ def line_plot(data: pl.DataFrame) -> None:
     fig.show()
 
 
-def pyearth(data: pl.DataFrame) -> Earth:
+def pyearth(model: Earth, data: pl.DataFrame) -> Earth:
     x = data["time"].to_numpy().reshape(-1, 1)
     y = data["power"].to_numpy()
 
     # Fit an Earth model
-    model = Earth()
     model.fit(x, y)
 
     # Print the model
