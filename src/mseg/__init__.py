@@ -57,7 +57,7 @@ def pyearth(model: Earth, data: pl.DataFrame) -> Earth:
     plt.plot(x, y_hat, "b.")
     plt.xlabel("time")
     plt.ylabel("power")
-    plt.title("Simple Earth Example")
+    plt.title("PyEarth Example")
     plt.show()
     return model
 
