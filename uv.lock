@@ -228,8 +228,7 @@ wheels = [
 ]
 
 [[package]]
-name = "millie"
-version = "0.1.dev24+ge00d8c6.d20241124"
+name = "mseg"
 source = { editable = "." }
 
 [package.dev-dependencies]
