@@ -18,7 +18,11 @@ model.fit(X, y)
 print(model.trace())
 print(model.summary())
 
-knots = [bf.get_knot() for bf in list(model.basis_)[1:] if not bf.is_pruned()]
+knots = [
+    bf.get_knot()
+    for bf in model.basis_
+    if hasattr(bf, "get_knot") and not bf.is_pruned()
+]
 print(f"knots: {knots}")
 
 # Plot the model

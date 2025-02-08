@@ -63,8 +63,11 @@ def pyearth(data: pl.DataFrame) -> Earth:
 
 
 def knots(model: Earth) -> list[float]:
-    basis_functions = model.basis_
-    return [bf.get_knot() for bf in basis_functions]
+    return [
+        bf.get_knot()
+        for bf in model.basis_
+        if hasattr(bf, "get_knot") and not bf.is_pruned()
+    ]
 
 
 __all__ = ["read_data"]
