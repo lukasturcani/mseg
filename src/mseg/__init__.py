@@ -51,8 +51,8 @@ def pyearth(data: pl.DataFrame) -> None:
     pyplot.figure()
     pyplot.plot(X, y, "r.")
     pyplot.plot(X, y_hat, "b.")
-    pyplot.xlabel("x_6")
-    pyplot.ylabel("y")
+    pyplot.xlabel("time")
+    pyplot.ylabel("power")
     pyplot.title("Simple Earth Example")
     pyplot.show()
 
