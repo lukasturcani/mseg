@@ -8,8 +8,17 @@ maintainers = [
   { name = "Lukas Turcani", email = "lukasturcani93@gmail.com" },
 ]
 
-dependencies = []
-requires-python = ">=3.12"
+dependencies = [
+    "clasp-segmentation",
+    "matplotlib>=3.7.5",
+    "numpy<1.24",
+    "plotly>=6.0.0",
+    "polars>=1.8.2",
+    "ruptures>=1.1.9",
+    "sklearn-contrib-py-earth",
+    "stumpy>=1.13.0",
+]
+requires-python = ">=3.8,<3.9"
 dynamic = ["version"]
 readme = "README.rst"
 description = "Does things for you."
@@ -73,8 +82,16 @@ warn_unreachable = true
 disallow_any_generics = true
 
 [[tool.mypy.overrides]]
-module = []
+module = [
+  "plotly.*",
+  "matplotlib.*",
+  "pyearth.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report term-missing"
+
+[tool.uv.sources]
+sklearn-contrib-py-earth = { git = "https://github.com/scikit-learn-contrib/py-earth", rev = "v0.2dev" }
+clasp-segmentation = { git = "https://github.com/patrickzib/clasp_segmentation" }
