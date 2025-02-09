@@ -1,14 +1,31 @@
-import numpy
+import numpy as np
+import polars as pl
 from pyearth import Earth
 from matplotlib import pyplot
 from itertools import islice
 
-# Create some fake data
-numpy.random.seed(0)
-m = 1000
-n = 10
-X = 80 * numpy.random.uniform(size=(m, n)) - 40
-y = numpy.abs(X[:, 6] - 4.0) + 1 * numpy.random.normal(size=m)
+# Simulated time series with more structural breaks
+times = np.arange(200)
+data = np.concatenate(
+    [
+        np.random.normal(0, 1, 30),
+        np.random.normal(5, 1, 30),
+        np.random.normal(-3, 1, 30),
+        np.random.normal(8, 1, 30),
+        np.random.normal(2, 1, 40),
+        np.random.normal(
+            -5, 1, 40
+        ),  # Change at t=30, t=60, t=90, t=120, t=160
+    ]
+)
+
+df = pl.DataFrame({"time": times, "value": data})
+
+# Prepare data for Earth model
+X = (
+    df["time"].to_numpy().reshape(-1, 1)
+)  # reshape to 2D array as required by Earth
+y = df["value"].to_numpy()
 
 # Fit an Earth model
 model = Earth()
@@ -28,11 +45,12 @@ print(f"knots: {knots}")
 # Plot the model
 y_hat = model.predict(X)
 pyplot.figure()
-pyplot.plot(X[:, 6], y, "r.")
-pyplot.plot(X[:, 6], y_hat, "b.")
-pyplot.xlabel("x_6")
-pyplot.ylabel("y")
-pyplot.title("Simple Earth Example")
+pyplot.plot(X, y, label="Actual")
+pyplot.plot(X, y_hat, "b.", label="Predicted")
+pyplot.xlabel("Time")
+pyplot.ylabel("Value")
+pyplot.title("Earth Model Time Series Fit")
+pyplot.legend()
 pyplot.show()
 
 basis_functions = model.basis_
