@@ -15,7 +15,6 @@ dependencies = [
     "plotly>=6.0.0",
     "polars>=1.8.2",
     "ruptures>=1.1.9",
-    "sklearn-contrib-py-earth",
     "stumpy>=1.13.0",
 ]
 requires-python = ">=3.8,<3.9"
@@ -93,5 +92,4 @@ ignore_missing_imports = true
 addopts = "--cov=src --cov-report term-missing"
 
 [tool.uv.sources]
-sklearn-contrib-py-earth = { git = "https://github.com/scikit-learn-contrib/py-earth", rev = "v0.2dev" }
 clasp-segmentation = { git = "https://github.com/patrickzib/clasp_segmentation" }
