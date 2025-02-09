@@ -9,9 +9,9 @@ maintainers = [
 ]
 
 dependencies = [
+    "clasp-segmentation",
     "matplotlib>=3.7.5",
     "numpy<1.24",
-    "pandas>=2.0.3",
     "plotly>=6.0.0",
     "polars>=1.8.2",
     "ruptures>=1.1.9",
@@ -94,3 +94,4 @@ addopts = "--cov=src --cov-report term-missing"
 
 [tool.uv.sources]
 sklearn-contrib-py-earth = { git = "https://github.com/scikit-learn-contrib/py-earth", rev = "v0.2dev" }
+clasp-segmentation = { git = "https://github.com/patrickzib/clasp_segmentation" }
