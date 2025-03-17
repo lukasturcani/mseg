@@ -1,5 +1,6 @@
 import pandas as pd
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 sns.set_theme()
 sns.set_color_codes()
@@ -50,3 +51,4 @@ _ = plot_time_series_with_profiles(
     true_cps,
     found_cps,
 )
+plt.show()

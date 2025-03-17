@@ -15,6 +15,7 @@ dependencies = [
     "plotly>=6.0.0",
     "polars>=1.8.2",
     "ruptures>=1.1.9",
+    "seaborn>=0.13.2",
     "stumpy>=1.13.0",
 ]
 requires-python = ">=3.8,<3.9"
