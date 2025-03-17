@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 def claspy(data: pl.DataFrame) -> list[float]:
     """Detect change points using ruptures."""
-    clasp = BinaryClaSPSegmentation()
-    change_points = data["time"][clasp.fit_predict(data["time"].to_numpy())]
+    clasp = BinaryClaSPSegmentation(early_stopping=False)
+    change_points = data["time"][clasp.fit_predict(data["power"].to_numpy())]
 
     fig = go.Figure()
     fig.add_trace(
