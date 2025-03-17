@@ -28,7 +28,7 @@ df = pl.DataFrame(
 # Convert 'y' column to NumPy array for ruptures
 signal = df["y"].to_numpy()
 
-clasp = BinaryClaSPSegmentation(early_stopping=False, threshold=0.5)
+clasp = BinaryClaSPSegmentation()
 indices = clasp.fit_predict(signal)
 change_points = df["x"][indices]
 print(indices, change_points)
@@ -43,5 +43,5 @@ for cp in change_points:
 plt.xlabel("X (Time or Index)")
 plt.ylabel("Y (Time Series Value)")
 plt.legend()
-plt.title("Automatic Change Point Detection using ruptures (Pelt)")
+plt.title("Automatic Change Point Detection using Claspy")
 plt.show()

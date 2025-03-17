@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 def claspy(data: pl.DataFrame) -> list[float]:
-    """Detect change points using ruptures."""
+    """Detect change points using Clasp."""
     clasp = BinaryClaSPSegmentation(early_stopping=False)
     change_points = data["time"][clasp.fit_predict(data["power"].to_numpy())]
 
