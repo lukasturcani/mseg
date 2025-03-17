@@ -87,6 +87,8 @@ module = [
   "plotly.*",
   "matplotlib.*",
   "pyearth.*",
+  "ruptures.*",
+  "claspy.*",
 ]
 ignore_missing_imports = true
 

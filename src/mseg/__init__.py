@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import plotly.express as px
 import polars as pl
 
-from mseg import pyearth, ruptures
+from mseg import claspy, pyearth, ruptures
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -38,4 +38,11 @@ def line_plot(data: pl.DataFrame) -> None:
     fig.show()
 
 
-__all__ = ["line_plot", "pyearth", "read_data", "ruptures", "scatter_plot"]
+__all__ = [
+    "claspy",
+    "line_plot",
+    "pyearth",
+    "read_data",
+    "ruptures",
+    "scatter_plot",
+]
