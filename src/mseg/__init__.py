@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 import plotly.express as px
 import polars as pl
 
-from mseg import claspy, pyearth, ruptures
+from mseg import claspy, pyearth, ruptures, sktime
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -45,4 +45,5 @@ __all__ = [
     "read_data",
     "ruptures",
     "scatter_plot",
+    "sktime",
 ]
