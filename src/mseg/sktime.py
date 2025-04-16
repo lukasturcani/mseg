@@ -46,3 +46,5 @@ def eagglo(
         width=1200,
         height=600,
     )
+    fig.show()
+    return list(change_points)
