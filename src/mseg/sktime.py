@@ -14,11 +14,12 @@ if TYPE_CHECKING:
 
 def eagglo(
     data: pl.DataFrame,
+    alpha: float = 1.0,
     penalty: Literal["mean_diff_penalty", "len_penalty"] | None = None,
 ) -> None:
     """Detect change points using EAgglo."""
     signal = data["power"].to_numpy()
-    algo = EAgglo(penalty=penalty)
+    algo = EAgglo(alpha=alpha, penalty=penalty)
     arr = algo.fit_transform(signal)
     indices = np.where(np.diff(arr) != 0)[0] + 1
     change_points = data["time"][indices]
