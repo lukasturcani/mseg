@@ -1,5 +1,10 @@
 version = 1
+revision = 1
 requires-python = "==3.8.*"
+resolution-markers = [
+    "sys_platform == 'win32'",
+    "sys_platform != 'win32'",
+]
 
 [[package]]
 name = "alabaster"
@@ -230,6 +235,24 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "scipy" },
     { name = "sktime" },
+]
+
+[[package]]
+name = "claspy"
+version = "0.2.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numba" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+    { name = "scipy" },
+    { name = "statsmodels" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1e/a1/71e276c66c39807c3221708bed1ae4286ad81fe527cb40049ca9b1ea5b8d/claspy-0.2.5.tar.gz", hash = "sha256:db0f42ea33d850da4949318e7588eeee73841aea540f154a00dce29ef634374f", size = 33345 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/88/d7/abb64facf01ac051663ef32b574e69d3f776069cf380e6242c0ab0e2733e/claspy-0.2.5-py3-none-any.whl", hash = "sha256:0252329c40ea3f321beccb4423b5eaf5ad35576870c1ea2ace47ce051c216e63", size = 36282 },
 ]
 
 [[package]]
@@ -952,12 +975,14 @@ name = "mseg"
 source = { editable = "." }
 dependencies = [
     { name = "clasp-segmentation" },
+    { name = "claspy" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "plotly" },
     { name = "polars" },
     { name = "ruptures" },
-    { name = "sklearn-contrib-py-earth" },
+    { name = "seaborn" },
+    { name = "sktime" },
     { name = "stumpy" },
 ]
 
@@ -976,12 +1001,14 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "clasp-segmentation", git = "https://github.com/patrickzib/clasp_segmentation" },
+    { name = "claspy", specifier = ">=0.2.5" },
     { name = "matplotlib", specifier = ">=3.7.5" },
     { name = "numpy", specifier = "<1.24" },
     { name = "plotly", specifier = ">=6.0.0" },
     { name = "polars", specifier = ">=1.8.2" },
     { name = "ruptures", specifier = ">=1.1.9" },
-    { name = "sklearn-contrib-py-earth", git = "https://github.com/scikit-learn-contrib/py-earth?rev=v0.2dev" },
+    { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "sktime", specifier = ">=0.16.0" },
     { name = "stumpy", specifier = ">=1.13.0" },
 ]
 
@@ -1219,11 +1246,23 @@ wheels = [
 ]
 
 [[package]]
+name = "patsy"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d1/81/74f6a65b848ffd16c18f920620ce999fe45fe27f01ab3911260ce4ed85e4/patsy-1.0.1.tar.gz", hash = "sha256:e786a9391eec818c054e359b737bbce692f051aee4c661f4141cc88fb459c0c4", size = 396010 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/2b/b50d3d08ea0fc419c183a84210571eba005328efa62b6b98bc28e9ead32a/patsy-1.0.1-py2.py3-none-any.whl", hash = "sha256:751fb38f9e97e62312e921a1954b81e1bb2bcda4f5eeabaf94db251ee791509c", size = 232923 },
+]
+
+[[package]]
 name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ptyprocess" },
+    { name = "ptyprocess", marker = "sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450 }
 wheels = [
@@ -1657,6 +1696,20 @@ wheels = [
 ]
 
 [[package]]
+name = "seaborn"
+version = "0.13.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pandas" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/86/59/a451d7420a77ab0b98f7affa3a1d78a313d2f7281a57afb1a34bae8ab412/seaborn-0.13.2.tar.gz", hash = "sha256:93e60a40988f4d65e9f4885df477e2fdaff6b73a9ded434c1ab356dd57eefff7", size = 1457696 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/11/00d3c3dfc25ad54e731d91449895a79e4bf2384dc3ac01809010ba88f6d5/seaborn-0.13.2-py3-none-any.whl", hash = "sha256:636f8336facf092165e27924f223d3c62ca560b1f2bb5dff7ab7fad265361987", size = 294914 },
+]
+
+[[package]]
 name = "send2trash"
 version = "1.8.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1681,16 +1734,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050 },
-]
-
-[[package]]
-name = "sklearn-contrib-py-earth"
-version = "0.1.0+16.g400f84d"
-source = { git = "https://github.com/scikit-learn-contrib/py-earth?rev=v0.2dev#400f84d435b7277124535c09ca32132c1d0eaa74" }
-dependencies = [
-    { name = "scikit-learn" },
-    { name = "scipy" },
-    { name = "six" },
 ]
 
 [[package]]
@@ -1855,6 +1898,26 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/28/e3/55dcc2cfbc3ca9c29519eb6884dd1415ecb53b0e934862d3559ddcb7e20b/stack_data-0.6.3.tar.gz", hash = "sha256:836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9", size = 44707 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695", size = 24521 },
+]
+
+[[package]]
+name = "statsmodels"
+version = "0.14.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "packaging" },
+    { name = "pandas" },
+    { name = "patsy" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4b/80/c4e279a6a13468ae2f1f01af2a07ddb44f397ac4d7636af13c5b3b83dde1/statsmodels-0.14.1.tar.gz", hash = "sha256:2260efdc1ef89f39c670a0bd8151b1d0843567781bcafec6cda0534eb47a94f6", size = 20309647 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cc/46/b62084c74612a651be78121f3447cb98fa5655341f03af7be4dce4fb86bd/statsmodels-0.14.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:bf293ada63b2859d95210165ad1dfcd97bd7b994a5266d6fbeb23659d8f0bf68", size = 10513008 },
+    { url = "https://files.pythonhosted.org/packages/b1/33/44469755648f2e7ab353ef1666c2513a9f75cb4ecf4de63df58c8c572aa1/statsmodels-0.14.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:44ca8cb88fa3d3a4ffaff1fb8eb0e98bbf83fc936fcd9b9eedee258ecc76696a", size = 10088714 },
+    { url = "https://files.pythonhosted.org/packages/a2/98/2713fd8827bec513bf17fd6b00e2182ed6707830ae58ca915b752743f310/statsmodels-0.14.1-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0d5373d176239993c095b00d06036690a50309a4e00c2da553b65b840f956ae6", size = 10497676 },
+    { url = "https://files.pythonhosted.org/packages/34/1f/ab80ddc1ebebe9f7bb18da1cc7ceb96f789809a3381565092c358ff71a72/statsmodels-0.14.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a532dfe899f8b6632cd8caa0b089b403415618f51e840d1817a1e4b97e200c73", size = 10856809 },
+    { url = "https://files.pythonhosted.org/packages/15/93/62c79bb548988201078242d903de47666a08167de8e4beceb32157d75d5f/statsmodels-0.14.1-cp38-cp38-win_amd64.whl", hash = "sha256:4fe0a60695952b82139ae8750952786a700292f9e0551d572d7685070944487b", size = 10025062 },
 ]
 
 [[package]]
