@@ -30,8 +30,8 @@ signal = df["y"].to_numpy()
 # Apply the Pelt algorithm (automatically detects breakpoints)
 _, tai, taif, _ = detect_cusum(
     signal,
-    threshold=4,
-    drift=0,
+    threshold=5,
+    drift=1,
     ending=False,
 )
 start_change_points = [df["x"][i] for i in tai]
