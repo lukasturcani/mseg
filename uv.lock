@@ -376,6 +376,15 @@ wheels = [
 ]
 
 [[package]]
+name = "detecta"
+version = "0.0.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/8c/8eef3b0d059d000fce70497b925507a370a1c320949826814dcd09bf5ac2/detecta-0.0.5.tar.gz", hash = "sha256:d2ea7d13dfbbc994d6ce385a7f8dc0a85fe675a8a8e712a64ec56e54c40603ed", size = 9301 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/da/0bf9676a6b7e5d723ed7f40b91f4ece5d4ccfb124103eae1bf61aab47b06/detecta-0.0.5-py3-none-any.whl", hash = "sha256:dbaf1938e5d785386c904034e2553824e2aa31793e967984ca65983aca06d23e", size = 12435 },
+]
+
+[[package]]
 name = "docutils"
 version = "0.20.1"
 source = { registry = "https://pypi.org/simple" }
@@ -976,6 +985,7 @@ source = { editable = "." }
 dependencies = [
     { name = "clasp-segmentation" },
     { name = "claspy" },
+    { name = "detecta" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "plotly" },
@@ -1002,6 +1012,7 @@ dev = [
 requires-dist = [
     { name = "clasp-segmentation", git = "https://github.com/patrickzib/clasp_segmentation" },
     { name = "claspy", specifier = ">=0.2.5" },
+    { name = "detecta", specifier = ">=0.0.5" },
     { name = "matplotlib", specifier = ">=3.7.5" },
     { name = "numpy", specifier = "<1.24" },
     { name = "plotly", specifier = ">=6.0.0" },
