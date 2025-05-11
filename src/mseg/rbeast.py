@@ -12,14 +12,27 @@ if TYPE_CHECKING:
     import polars as pl
 
 
-def rbeast(data: pl.DataFrame) -> list[float]:
+def rbeast(
+    data: pl.DataFrame,
+    *,
+    has_outlier: bool,
+    mcmc_samples: int = 80000,
+    mcmc_chains: int = 5,
+    seed: int = 32,
+) -> list[float]:
     """Detect change points using ruptures."""
     signal = data["power"].to_numpy()
     output = rb.beast(
         signal,
         season="none",
-        hasOutlier=True,
+        hasOutlier=has_outlier,
         print_param=False,
+        mcmc_seed=seed,
+        mcmc_samples=mcmc_samples,
+        mcmc_chains=mcmc_chains,
+        ocp_minmax=(0, 20),
+        scp_minmax=(0, 20),
+        tcp_minmax=(0, 20),
     )
     breakpoints = [
         _ChangePoint(
