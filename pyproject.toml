@@ -16,6 +16,7 @@ dependencies = [
     "numpy<1.24",
     "plotly>=6.0.0",
     "polars>=1.8.2",
+    "rbeast>=0.1.23",
     "ruptures>=1.1.9",
     "seaborn>=0.13.2",
     "sktime>=0.16.0",

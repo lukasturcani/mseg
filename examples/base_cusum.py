@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import polars as pl
-from mseg.cusum.detector import 
+from mseg.cusum.detector.cusum import CUSUM_Detector, ProbCUSUM_Detector
 
 # Generate synthetic data using Polars
 np.random.seed(42)
@@ -27,13 +27,20 @@ df = pl.DataFrame(
 # Convert 'y' column to NumPy array for ruptures
 signal = df["y"].to_numpy()
 
-# Apply the Pelt algorithm (automatically detects breakpoints)
-ta, tai, taif, _ = detect_cusum(
-    signal,
-    threshold=5,
-    drift=0,
-    ending=True,
+cusum_detector = ProbCUSUM_Detector(
+    threshold_probability=0.005,
 )
-alarm_change_points = [df["x"][i] for i in ta]
-start_change_points = [df["x"][i] for i in tai]
-end_change_points = [df["x"][i] for i in taif]
+_, cusum_change_points = cusum_detector.detect_change_points(signal)
+change_points = [df["x"][int(i)] for i in cusum_change_points]
+# Plot results
+plt.figure(figsize=(12, 6))
+plt.plot(df["x"], df["y"], label="Time Series", color="blue")
+for cp in change_points:
+    plt.axvline(
+        x=cp, color="red", linestyle="--", label="Detected Change Point"
+    )
+plt.xlabel("X (Time or Index)")
+plt.ylabel("Y (Time Series Value)")
+plt.legend()
+plt.title("Automatic Change Point Detection using ruptures (Pelt)")
+plt.show()
