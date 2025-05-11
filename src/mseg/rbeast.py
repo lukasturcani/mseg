@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 def rbeast(data: pl.DataFrame) -> list[float]:
     """Detect change points using ruptures."""
     signal = data["power"].to_numpy()
-    output = rb.beast(signal, season="none")
+    output = rb.beast(signal, season="none", print_param=False)
     breakpoints = [
         _ChangePoint(
             location=data["time"][int(location)],
