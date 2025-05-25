@@ -1,16 +1,11 @@
 """Segmentation analysis."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import plotly.express as px
 import polars as pl
 
-from mseg import claspy, pyearth, rbeast, ruptures, sktime
-
-if TYPE_CHECKING:
-    from pathlib import Path
+from mseg import rbeast, ruptures
 
 
 def read_data(path: Path) -> pl.DataFrame:
