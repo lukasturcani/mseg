@@ -9,6 +9,7 @@ maintainers = [
 ]
 
 dependencies = [
+    "numpy<2",
     "plotly>=6.1.1",
     "polars>=1.30.0",
     "rbeast>=0.1.23",
