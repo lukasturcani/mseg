@@ -15,7 +15,6 @@ dependencies = [
     "rbeast>=0.1.23",
     "ruptures>=1.1.9",
     "streamlit>=1.45.1",
-    "watchdog>=6.0.0",
 ]
 requires-python = ">=3.13"
 dynamic = ["version"]
@@ -31,6 +30,7 @@ dev = [
   "sphinx",
   "sphinx-copybutton",
   "furo",
+  "watchdog>=6.0.0",
 ]
 
 [project.urls]
