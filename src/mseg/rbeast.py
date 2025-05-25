@@ -1,15 +1,10 @@
 """Rbeast tools."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
+import polars as pl
 import Rbeast as rb  # noqa: N813
 from plotly import graph_objects as go
-
-if TYPE_CHECKING:
-    import polars as pl
 
 
 def rbeast(
@@ -39,7 +34,9 @@ def rbeast(
             location=data["time"][int(location)],
             probability=probability,
         )
-        for location, probability in zip(output.trend.cp, output.trend.cpPr)
+        for location, probability in zip(
+            output.trend.cp, output.trend.cpPr, strict=True
+        )
     ]
     breakpoints.sort(key=lambda x: x.location)
 

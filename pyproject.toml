@@ -84,6 +84,7 @@ disallow_any_generics = true
 module = [
   "plotly.*",
   "ruptures.*",
+  "Rbeast.*",
 ]
 ignore_missing_imports = true
 

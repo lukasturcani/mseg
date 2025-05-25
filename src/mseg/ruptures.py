@@ -1,14 +1,8 @@
 """Ruptures tools."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
+import polars as pl
 import ruptures as rpt
 from plotly import graph_objects as go
-
-if TYPE_CHECKING:
-    import polars as pl
 
 
 def ruptures(data: pl.DataFrame, *, pen: int = 10) -> list[float]:
