@@ -9,20 +9,11 @@ maintainers = [
 ]
 
 dependencies = [
-    "clasp-segmentation",
-    "claspy>=0.2.5",
-    "detecta>=0.0.5",
-    "matplotlib>=3.7.5",
-    "numpy<1.24",
-    "plotly>=6.0.0",
-    "polars>=1.8.2",
     "rbeast>=0.1.23",
     "ruptures>=1.1.9",
-    "seaborn>=0.13.2",
-    "sktime>=0.16.0",
-    "stumpy>=1.13.0",
+    "streamlit>=1.45.1",
 ]
-requires-python = ">=3.8,<3.9"
+requires-python = ">=3.13"
 dynamic = ["version"]
 readme = "README.rst"
 description = "Does things for you."
@@ -36,7 +27,6 @@ dev = [
   "sphinx",
   "sphinx-copybutton",
   "furo",
-  "notebook>=7.3.2",
 ]
 
 [project.urls]
@@ -88,15 +78,9 @@ disallow_any_generics = true
 [[tool.mypy.overrides]]
 module = [
   "plotly.*",
-  "matplotlib.*",
-  "pyearth.*",
   "ruptures.*",
-  "claspy.*",
 ]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = "--cov=src --cov-report term-missing"
-
-[tool.uv.sources]
-clasp-segmentation = { git = "https://github.com/patrickzib/clasp_segmentation" }
