@@ -9,6 +9,7 @@ maintainers = [
 ]
 
 dependencies = [
+    "polars>=1.30.0",
     "rbeast>=0.1.23",
     "ruptures>=1.1.9",
     "streamlit>=1.45.1",
@@ -32,6 +33,9 @@ dev = [
 [project.urls]
 github = "https://github.com/lukasturcani/mseg"
 documentation = "https://mseg.readthedocs.io"
+
+[project.scripts]
+mseg = "mseg._internal.scripts.mseg:main"
 
 [tool.setuptools_scm]
 
