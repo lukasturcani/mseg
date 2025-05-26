@@ -293,6 +293,15 @@ def main() -> None:
                     """  # noqa: E501
                 ),
             ),
+            hasOutlier=st.checkbox(
+                "hasOutlier",
+                help=(
+                    """
+                    if true, the model with an outlier component will be fitted (if season is 'none' then
+                    Y=trend+outlier+error, or if season is not 'none' then Y=trend+season+outlier+error).
+                    """  # noqa: E501
+                ),
+            ),
         )
 
 
