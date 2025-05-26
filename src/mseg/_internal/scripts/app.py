@@ -270,6 +270,29 @@ def main() -> None:
                     """  # noqa: E501
                 ),
             ),
+            precPriorType=st.selectbox(
+                "precPriorType",
+                ["componentwise", "uniform", "constant", "orderwise"],
+                index=0,
+                help=(
+                    """
+                    * constant - the precision parameter used to parameterize the model coefficients is fixed to
+                    a const specified by precValue. In other words, precValue is a user-defined hyperparameter
+                    and the fitting result may be sensitive to the chosen values of precValue.
+                    * uniform - the precision parameter used to parameterize the model coefficients is a random variable;
+                    its initial value is specified by precValue. In other words, precValue will be inferred by the MCMC,
+                    so the fitting result will be insensitive to the chose inital value of precValue.
+                    * componentwise - multiple precision parameters are used to parameterize the model coefficients for
+                    individual components (e.g., one for season and another for trend); their initial values is specified
+                    by precValue. In other words, precValue will be inferred by the MCMC, so the fitting result will be
+                    insensitive to the choice in precValue.
+                    * orderwise - multiple precision parameters are used to parameterize the model coefficients not just for
+                    individual components but also for individual orders of each component; their initial values is specified
+                    by precValue. In other words, precValue will be inferred by the MCMC, so the fitting result will be
+                    insensitive to the choice in precValue.
+                    """  # noqa: E501
+                ),
+            ),
         )
 
 
