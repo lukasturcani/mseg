@@ -90,14 +90,36 @@ def main() -> None:
             sseg_minlength=st.number_input(
                 "sseg_minlength",
                 value=None,
+                help=(
+                    "the min length of the segment for the seasonal component "
+                    "i.e., the min distance between neighorbing changepoints)"
+                ),
             ),
             sseg_leftmargin=st.number_input(
                 "sseg_leftmargin",
                 value=None,
+                help=(
+                    """
+                    the number of leftmost data points excluded for seasonal changepoint detection.
+                    That is,  no changepoints are allowed in the starting window/segment of length sseg_leftmargin.
+                    sseg_leftmargin must be an unitless integer - the number of time intervals/data points so that the
+                    time window in the original unit is sseg_leftmargin*deltat. If missing, sseg_leftmargin defaults
+                    to the minimum segment length 'sseg_min'
+                    """  # noqa: E501
+                ),
             ),
             sseg_rightmargin=st.number_input(
                 "sseg_rightmargin",
                 value=None,
+                help=(
+                    """
+                    the number of rightmost data points excluded for seasonal changepoint detection.
+                    That is,  no changepoints are allowed in the ending window/segment of length sseg_rightmargin.
+                    sseg_rightmargin must be an unitless integer - the number of time intervals/data points so that the
+                    time window in the original unit is sseg_rightmargin*deltat. If missing, sseg_rightmargin defaults
+                    to the minimum segment length 'sseg_min'
+                    """  # noqa: E501
+                ),
             ),
             tcp_minmax=st.slider(
                 "tcp_minmax",
