@@ -125,7 +125,11 @@ def main() -> None:
                 min_value=0,
                 max_value=50,
                 step=1,
-                value=(0, 20),
+                value=(0, 10),
+                help=(
+                    "the min and max numbers of trend changepoints (tcp) "
+                    "allowed"
+                ),
             ),
             torder_minmax=st.slider(
                 "torder_minmax",
@@ -133,14 +137,32 @@ def main() -> None:
                 max_value=10,
                 step=1,
                 value=(0, 1),
+                help=(
+                    "the min and max orders of polynomials used "
+                    "to model the trend"
+                ),
             ),
             tseg_minlength=st.number_input(
                 "tseg_minlength",
                 value=None,
+                help=(
+                    """
+                    the min length of the segment for the trend component (i.e.,
+                    the min distance between neighorbing changepoints)
+                    """  # noqa: E501
+                ),
             ),
             tseg_leftmargin=st.number_input(
                 "tseg_leftmargin",
                 value=None,
+                help=(
+                    """
+                    the number of leftmost data points excluded for trend changepoint detection.
+                    That is,  no trend changepoints are allowed in the starting window/segment of length tseg_leftmargin.
+                    tseg_leftmargin must be an unitless integer - the number of time intervals/data points so that the
+                    time window in the original unit is tseg_leftmargin*deltat.
+                    """  # noqa: E501
+                ),
             ),
             tseg_rightmargin=st.number_input(
                 "tseg_rightmargin",
