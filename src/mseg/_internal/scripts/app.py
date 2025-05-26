@@ -7,7 +7,7 @@ from mseg._internal.utils import parse_data_file
 
 
 def main() -> None:
-    st.title("Segmentation Analysis")
+    st.title("RBeast Change Point Detection")
     data_file = st.file_uploader("Choose a file")
     if data_file is None:
         return
@@ -16,13 +16,12 @@ def main() -> None:
     if delta_t is None:
         st.error("Time delta between samples is not constant.")
         return
-    else:
-        st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
+    st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
     st.write(data_df)
     st.line_chart(data_df, x="time", y="power")
 
     with st.sidebar:
-        st.header("RBeast Parameters")
+        st.header("Parameters")
         has_outlier = st.checkbox("Has Outlier", value=False)
         mcmc_samples = st.number_input(
             "MCMC Samples", value=80000, min_value=1
