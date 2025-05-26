@@ -336,7 +336,6 @@ def main() -> None:
             output.season = raw_output.season
         if has_outlier:
             output.outlier = raw_output.outlier
-        print(output)
 
 
 def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
@@ -377,9 +376,14 @@ class RBeastOutput:
 
 
 def _trend_change_points(
-    output: RBeastOutput,
+    trend: TrendOutput,
 ) -> list[ChangePoint]:
-    pass
+    change_points = [
+        ChangePoint(location=cp, probability=cp_pr)
+        for cp, cp_pr in zip(trend.cp, trend.cpPr, strict=True)
+    ]
+    change_points.sort(key=lambda cp: cp.location)
+    return change_points
 
 
 if __name__ == "__main__":
