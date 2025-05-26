@@ -339,6 +339,12 @@ def main() -> None:
 
     st.header("Trend Change Points")
     st.dataframe(_trend_change_points(output.trend))
+    if output.season is not None:
+        st.header("Seasonal Change Points")
+        st.dataframe(_seasonal_change_points(output.season))
+    if output.outlier is not None:
+        st.header("Outlier Change Points")
+        st.dataframe(_outlier_change_points(output.outlier))
 
 
 def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
@@ -385,6 +391,34 @@ def _trend_change_points(
         {
             "time": trend.cp,
             "probability": trend.cpPr,
+        },
+    ).sort("time")
+    return cp_df.with_columns(
+        pl.int_range(1, len(cp_df) + 1).alias("")
+    ).select("", "time", "probability")
+
+
+def _seasonal_change_points(
+    season: SeasonOputput,
+) -> pl.DataFrame:
+    cp_df = pl.DataFrame(
+        {
+            "time": season.cp,
+            "probability": season.cpPr,
+        },
+    ).sort("time")
+    return cp_df.with_columns(
+        pl.int_range(1, len(cp_df) + 1).alias("")
+    ).select("", "time", "probability")
+
+
+def _outlier_change_points(
+    outlier: OutlierOutput,
+) -> pl.DataFrame:
+    cp_df = pl.DataFrame(
+        {
+            "time": outlier.cp,
+            "probability": outlier.cpPr,
         },
     ).sort("time")
     return cp_df.with_columns(
