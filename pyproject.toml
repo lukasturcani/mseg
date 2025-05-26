@@ -38,7 +38,7 @@ github = "https://github.com/lukasturcani/mseg"
 documentation = "https://mseg.readthedocs.io"
 
 [project.scripts]
-mseg = "mseg._internal.scripts.mseg:main"
+mseg = "mseg._internal.scripts.launch:main"
 
 [tool.setuptools_scm]
 
