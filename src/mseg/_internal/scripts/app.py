@@ -87,6 +87,23 @@ def main() -> None:
                 step=1,
                 value=(0, 1),
             ),
+            tseg_minlength=st.number_input(
+                "tseg_minlength",
+                value=None,
+            ),
+            tseg_leftmargin=st.number_input(
+                "tseg_leftmargin",
+                value=None,
+            ),
+            tseg_rightmargin=st.number_input(
+                "tseg_rightmargin",
+                value=None,
+            ),
+            method=st.selectbox(
+                "method",
+                ["bayes", "bic", "aic", "aicc", "hic", "bic0.25", "bic0.5"],
+                index=0,
+            ),
         )
 
 
