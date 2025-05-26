@@ -1,3 +1,4 @@
+import numpy as np
 import polars as pl
 import Rbeast as rb  # noqa: N813
 import streamlit as st
@@ -10,11 +11,13 @@ def main() -> None:
     data_file = st.file_uploader("Choose a file")
     if data_file is None:
         return
-    data_df = parse_data_file(data_file.getvalue().decode())
+    data_df = parse_data_file(data_file.getvalue().decode()).sort("time")
     delta_t = _get_delta_t(data_df)
     if delta_t is None:
         st.error("Time delta between samples is not constant.")
         return
+    else:
+        st.success(f"Time delta between samples is {delta_t:.2f} seconds.")
     st.write(data_df)
     st.line_chart(data_df, x="time", y="power")
 
@@ -35,6 +38,7 @@ def main() -> None:
             ),
             deltat=st.number_input(
                 "DeltaT",
+                value=delta_t,
             ),
             season=st.selectbox(
                 "Season",
@@ -49,8 +53,13 @@ def main() -> None:
         )
 
 
-def _get_delta_t(data: pl.DataFrame) -> float | None:
-    pass
+def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
+    diffs = data["time"].diff().drop_nulls()
+    ref = diffs[0]
+    all_close = np.all(np.isclose(diffs.to_numpy(), ref, atol=tolerance))
+    if all_close:
+        return ref
+    return None
 
 
 if __name__ == "__main__":
