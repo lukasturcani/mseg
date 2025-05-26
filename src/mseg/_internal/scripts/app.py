@@ -33,6 +33,7 @@ def main() -> None:
             deltat=st.number_input(
                 "deltat",
                 value=delta_t,
+                help="The time interval between consecutive datapoints.",
             ),
             season=st.selectbox(
                 "season",
@@ -43,6 +44,14 @@ def main() -> None:
                     "none",
                 ],
                 index=3,
+                help=(
+                    """
+                    * none - trend-only data with no seasonality
+                    * harmonic - the seasonal/peridoic component modelled via harmonic curves
+                    * dummy - the seasonal component  modelled via a dummy basis (i.e., pulse-like bases)
+                    * svd - svd-derived bases (experimental feature)
+                    """
+                ),
             ),
             period=st.number_input(
                 "period",
