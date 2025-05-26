@@ -49,6 +49,10 @@ def main() -> None:
                 ],
                 index=3,
             ),
+            period=st.number_input(
+                "Period",
+                value=float("nan"),
+            ),
         )
 
 
