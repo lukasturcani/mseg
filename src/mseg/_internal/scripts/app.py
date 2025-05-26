@@ -10,6 +10,7 @@ def main() -> None:
         return
     data_df = parse_data_file(data_file.getvalue().decode())
     st.write(data_df)
+    st.line_chart(data_df, x="time", y="power")
 
 
 if __name__ == "__main__":
