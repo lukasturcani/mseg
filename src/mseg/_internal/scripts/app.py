@@ -22,7 +22,7 @@ def main() -> None:
 
     with st.sidebar:
         st.header("Parameters")
-        rb.beast(
+        output = rb.beast(
             Y=data_df["power"].to_numpy(),
             start=st.number_input(
                 "start",
