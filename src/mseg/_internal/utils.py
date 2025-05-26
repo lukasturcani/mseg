@@ -1,12 +1,9 @@
-from pathlib import Path
-
 import plotly.express as px
 import polars as pl
 
 
-def read_data(path: Path) -> pl.DataFrame:
+def parse_data_file(content: str) -> pl.DataFrame:
     """Read data from a path."""
-    content = path.read_text()
     lines = content.splitlines()
     xs = []
     ys = []
