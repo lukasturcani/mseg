@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Protocol
 
 import altair as alt
 import numpy as np
@@ -27,7 +28,34 @@ def main() -> None:
 
     with st.sidebar:
         st.header("Parameters")
-        output = rb.beast(
+        season = st.selectbox(
+            "season",
+            [
+                "none",
+                "harmonic",
+                "dummy",
+                "svd",
+            ],
+            index=0,
+            help=(
+                """
+                * none - trend-only data with no seasonality
+                * harmonic - the seasonal/peridoic component modelled via harmonic curves
+                * dummy - the seasonal component  modelled via a dummy basis (i.e., pulse-like bases)
+                * svd - svd-derived bases (experimental feature)
+                """  # noqa: E501
+            ),
+        )
+        has_outlier = st.checkbox(
+            "hasOutlier",
+            help=(
+                """
+                    if true, the model with an outlier component will be fitted (if season is 'none' then
+                    Y=trend+outlier+error, or if season is not 'none' then Y=trend+season+outlier+error).
+                    """  # noqa: E501
+            ),
+        )
+        raw_output = rb.beast(
             Y=data_df["power"].to_numpy(),
             start=st.number_input(
                 "start",
@@ -39,24 +67,7 @@ def main() -> None:
                 value=delta_t,
                 help="The time interval between consecutive datapoints.",
             ),
-            season=st.selectbox(
-                "season",
-                [
-                    "none",
-                    "harmonic",
-                    "dummy",
-                    "svd",
-                ],
-                index=0,
-                help=(
-                    """
-                    * none - trend-only data with no seasonality
-                    * harmonic - the seasonal/peridoic component modelled via harmonic curves
-                    * dummy - the seasonal component  modelled via a dummy basis (i.e., pulse-like bases)
-                    * svd - svd-derived bases (experimental feature)
-                    """  # noqa: E501
-                ),
-            ),
+            season=season,
             period=st.number_input(
                 "period",
                 value=float("nan"),
@@ -298,15 +309,7 @@ def main() -> None:
                     """  # noqa: E501
                 ),
             ),
-            hasOutlier=st.checkbox(
-                "hasOutlier",
-                help=(
-                    """
-                    if true, the model with an outlier component will be fitted (if season is 'none' then
-                    Y=trend+outlier+error, or if season is not 'none' then Y=trend+season+outlier+error).
-                    """  # noqa: E501
-                ),
-            ),
+            hasOutlier=has_outlier,
             ocp_minmax=st.slider(
                 "ocp_minmax",
                 min_value=0,
@@ -326,6 +329,14 @@ def main() -> None:
             quiet=True,
             dump_ci=False,
         )
+        output = RBeastOutput(
+            trend=raw_output.trend,
+        )
+        if season != "none":
+            output.season = raw_output.season
+        if has_outlier:
+            output.outlier = raw_output.outlier
+        print(output)
 
 
 def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
@@ -341,6 +352,34 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
 class ChangePoint:
     location: float
     probability: float
+
+
+class TrendOutput(Protocol):
+    cp: list[float]
+    cpPr: list[float]  # noqa: N815
+
+
+class SeasonOputput(Protocol):
+    cp: list[float]
+    cpPr: list[float]  # noqa: N815
+
+
+class OutlierOutput(Protocol):
+    cp: list[float]
+    cpPr: list[float]  # noqa: N815
+
+
+@dataclass(slots=True)
+class RBeastOutput:
+    trend: TrendOutput
+    season: SeasonOputput | None = None
+    outlier: OutlierOutput | None = None
+
+
+def _trend_change_points(
+    output: RBeastOutput,
+) -> list[ChangePoint]:
+    pass
 
 
 if __name__ == "__main__":
