@@ -329,13 +329,16 @@ def main() -> None:
             quiet=True,
             dump_ci=False,
         )
-        output = RBeastOutput(
-            trend=raw_output.trend,
-        )
-        if season != "none":
-            output.season = raw_output.season
-        if has_outlier:
-            output.outlier = raw_output.outlier
+    output = RBeastOutput(
+        trend=raw_output.trend,
+    )
+    if season != "none":
+        output.season = raw_output.season
+    if has_outlier:
+        output.outlier = raw_output.outlier
+
+    st.header("Trend Change Points")
+    st.dataframe(_trend_change_points(output.trend))
 
 
 def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
@@ -377,13 +380,16 @@ class RBeastOutput:
 
 def _trend_change_points(
     trend: TrendOutput,
-) -> list[ChangePoint]:
-    change_points = [
-        ChangePoint(location=cp, probability=cp_pr)
-        for cp, cp_pr in zip(trend.cp, trend.cpPr, strict=True)
-    ]
-    change_points.sort(key=lambda cp: cp.location)
-    return change_points
+) -> pl.DataFrame:
+    cp_df = pl.DataFrame(
+        {
+            "time": trend.cp,
+            "probability": trend.cpPr,
+        },
+    ).sort("time")
+    return cp_df.with_columns(
+        pl.int_range(1, len(cp_df) + 1).alias("")
+    ).select("", "time", "probability")
 
 
 if __name__ == "__main__":
