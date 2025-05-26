@@ -22,7 +22,8 @@ def main() -> None:
     st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
     st.write(data_df)
 
-    st.line_chart(data_df, x="time", y="power")
+    chart = alt.Chart(data_df).mark_line().encode(x="time", y="power")
+    st.altair_chart(chart)
 
     with st.sidebar:
         st.header("Parameters")
