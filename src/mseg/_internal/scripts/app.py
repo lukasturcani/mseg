@@ -50,12 +50,21 @@ def main() -> None:
                     * harmonic - the seasonal/peridoic component modelled via harmonic curves
                     * dummy - the seasonal component  modelled via a dummy basis (i.e., pulse-like bases)
                     * svd - svd-derived bases (experimental feature)
-                    """
+                    """  # noqa: E501
                 ),
             ),
             period=st.number_input(
                 "period",
                 value=float("nan"),
+                help=(
+                    """
+                    a number to specify the period if periodic/seasonal variations
+                    are present in the data. If period is given a zero, negative value or 'none'
+                    it suggests no seasonal/periodic component in the signal. (season='none'
+                    also suggests no periodic component).
+                    The unit of 'period', if any, should be consistent with the unit of 'deltat'.
+                    """  # noqa: E501
+                ),
             ),
             scp_minmax=st.slider(
                 "scp_minmax",
