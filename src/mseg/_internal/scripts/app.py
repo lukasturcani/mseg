@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+import altair as alt
 import numpy as np
 import polars as pl
 import Rbeast as rb  # noqa: N813
@@ -18,6 +21,7 @@ def main() -> None:
         return
     st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
     st.write(data_df)
+
     st.line_chart(data_df, x="time", y="power")
 
     with st.sidebar:
@@ -330,6 +334,12 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
     if all_close:
         return ref
     return None
+
+
+@dataclass(slots=True)
+class ChangePoint:
+    location: float
+    probability: float
 
 
 if __name__ == "__main__":
