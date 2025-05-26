@@ -22,25 +22,19 @@ def main() -> None:
 
     with st.sidebar:
         st.header("Parameters")
-        has_outlier = st.checkbox("Has Outlier", value=False)
-        mcmc_samples = st.number_input(
-            "MCMC Samples", value=80000, min_value=1
-        )
-        mcmc_chains = st.number_input("MCMC Chains", value=5, min_value=1)
-        seed = st.number_input("Random Seed", value=32, min_value=0)
         rb.beast(
             Y=data_df["power"].to_numpy(),
             start=st.number_input(
-                "Start",
+                "start",
                 value=data_df.select(pl.col("time").min()).item(),
                 min_value=0.0,
             ),
             deltat=st.number_input(
-                "DeltaT",
+                "deltat",
                 value=delta_t,
             ),
             season=st.selectbox(
-                "Season",
+                "season",
                 [
                     "harmonic",
                     "dummy",
@@ -50,8 +44,48 @@ def main() -> None:
                 index=3,
             ),
             period=st.number_input(
-                "Period",
+                "period",
                 value=float("nan"),
+            ),
+            scp_minmax=st.slider(
+                "scp_minmax",
+                min_value=0,
+                max_value=50,
+                step=1,
+                value=(0, 10),
+            ),
+            sorder_minmax=st.slider(
+                "sorder_minmax",
+                min_value=0,
+                max_value=10,
+                step=1,
+                value=(0, 5),
+            ),
+            sseg_minlength=st.number_input(
+                "sseg_minlength",
+                value=None,
+            ),
+            sseg_leftmargin=st.number_input(
+                "sseg_leftmargin",
+                value=None,
+            ),
+            sseg_rightmargin=st.number_input(
+                "sseg_rightmargin",
+                value=None,
+            ),
+            tcp_minmax=st.slider(
+                "tcp_minmax",
+                min_value=0,
+                max_value=50,
+                step=1,
+                value=(0, 20),
+            ),
+            torder_minmax=st.slider(
+                "torder_minmax",
+                min_value=0,
+                max_value=10,
+                step=1,
+                value=(0, 1),
             ),
         )
 
