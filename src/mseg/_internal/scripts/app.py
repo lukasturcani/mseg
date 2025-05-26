@@ -72,6 +72,9 @@ def main() -> None:
                 max_value=50,
                 step=1,
                 value=(0, 10),
+                help=(
+                    "the min and max number of seasonal changepoints allowed"
+                ),
             ),
             sorder_minmax=st.slider(
                 "sorder_minmax",
@@ -79,6 +82,10 @@ def main() -> None:
                 max_value=10,
                 step=1,
                 value=(0, 5),
+                help=(
+                    "the min and max harmonic orders of seasonal "
+                    "changepoints (scp) allowed"
+                ),
             ),
             sseg_minlength=st.number_input(
                 "sseg_minlength",
