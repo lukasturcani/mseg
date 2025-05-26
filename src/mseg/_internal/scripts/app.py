@@ -216,22 +216,48 @@ def main() -> None:
             mcmc_seed=st.number_input(
                 "mcmc_seed",
                 value=1,
+                help=(
+                    """
+                    a seed for the random number generator; set it to a non-zero integer to
+                    reproduce the results among different runs
+                    """  # noqa: E501
+                ),
             ),
             mcmc_burbin=st.number_input(
                 "mcmc_burnin",
                 value=200,
+                help=(
+                    """
+                    the number of initial samples of each chain to be discarded
+                    """
+                ),
             ),
             mcmc_chains=st.number_input(
                 "mcmc_chains",
                 value=3,
+                help=(
+                    """
+                    the number of MCMC chains; the larger, the better but with more computation.
+                    """  # noqa: E501
+                ),
             ),
             mcmc_thin=st.number_input(
                 "mcmc_thin",
                 value=5,
+                help=(
+                    """
+                    a thinning factor for MCMC chains: take every 'mcmc.thin'-th sample
+                    """  # noqa: E501
+                ),
             ),
             mcmc_samples=st.number_input(
                 "mcmc_samples",
                 value=8000,
+                help=(
+                    """
+                    number of MCMC samples collected; the larger, the better
+                    """
+                ),
             ),
             precValue=st.number_input(
                 "precValue",
