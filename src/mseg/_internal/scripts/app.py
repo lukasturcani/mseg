@@ -1,3 +1,5 @@
+import polars as pl
+import Rbeast as rb  # noqa: N813
 import streamlit as st
 
 from mseg._internal.utils import parse_data_file
@@ -9,6 +11,10 @@ def main() -> None:
     if data_file is None:
         return
     data_df = parse_data_file(data_file.getvalue().decode())
+    delta_t = _get_delta_t(data_df)
+    if delta_t is None:
+        st.error("Time delta between samples is not constant.")
+        return
     st.write(data_df)
     st.line_chart(data_df, x="time", y="power")
 
@@ -20,8 +26,31 @@ def main() -> None:
         )
         mcmc_chains = st.number_input("MCMC Chains", value=5, min_value=1)
         seed = st.number_input("Random Seed", value=32, min_value=0)
+        rb.beast(
+            Y=data_df["power"].to_numpy(),
+            start=st.number_input(
+                "Start",
+                value=data_df.select(pl.col("time").min()).item(),
+                min_value=0.0,
+            ),
+            deltat=st.number_input(
+                "DeltaT",
+            ),
+            season=st.selectbox(
+                "Season",
+                [
+                    "harmonic",
+                    "dummy",
+                    "svd",
+                    "none",
+                ],
+                index=3,
+            ),
+        )
 
-        st.header("Ruptures Parameters")
+
+def _get_delta_t(data: pl.DataFrame) -> float | None:
+    pass
 
 
 if __name__ == "__main__":
