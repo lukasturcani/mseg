@@ -343,12 +343,19 @@ def main() -> None:
         alt.Chart(
             _trend_change_point_probability(raw_output.time, output.trend)
         )
-        .mark_line()
+        .mark_line(
+            color="green",
+        )
         .encode(
             x="time",
             y="probability",
         )
     )
+    if st.checkbox("Show original data", value=True):
+        trend_cp_probability_chart = alt.layer(
+            chart, trend_cp_probability_chart
+        ).resolve_scale(y="independent")
+
     st.altair_chart(trend_cp_probability_chart)
     if output.season is not None:
         st.header("Seasonal Change Points")
