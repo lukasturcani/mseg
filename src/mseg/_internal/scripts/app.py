@@ -17,7 +17,7 @@ def main() -> None:
         st.error("Time delta between samples is not constant.")
         return
     else:
-        st.success(f"Time delta between samples is {delta_t:.2f} seconds.")
+        st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
     st.write(data_df)
     st.line_chart(data_df, x="time", y="power")
 
