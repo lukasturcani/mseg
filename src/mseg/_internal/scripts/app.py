@@ -104,6 +104,32 @@ def main() -> None:
                 ["bayes", "bic", "aic", "aicc", "hic", "bic0.25", "bic0.5"],
                 index=0,
             ),
+            detrend=st.checkbox("detrend"),
+            deseasonalize=st.checkbox("deseasonalize"),
+            mcmc_seed=st.number_input(
+                "mcmc_seed",
+                value=0,
+            ),
+            mcmc_burbin=st.number_input(
+                "mcmc_burnin",
+                value=200,
+            ),
+            mcmc_chains=st.number_input(
+                "mcmc_chains",
+                value=3,
+            ),
+            mcmc_thin=st.number_input(
+                "mcmc_thin",
+                value=5,
+            ),
+            mcmc_samples=st.number_input(
+                "mcmc_samples",
+                value=8000,
+            ),
+            precValue=st.number_input(
+                "precValue",
+                value=1.5,
+            ),
         )
 
 
