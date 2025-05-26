@@ -155,7 +155,7 @@ def main() -> None:
             deseasonalize=st.checkbox("deseasonalize"),
             mcmc_seed=st.number_input(
                 "mcmc_seed",
-                value=0,
+                value=1,
             ),
             mcmc_burbin=st.number_input(
                 "mcmc_burnin",
