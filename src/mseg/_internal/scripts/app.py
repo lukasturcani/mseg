@@ -262,6 +262,13 @@ def main() -> None:
             precValue=st.number_input(
                 "precValue",
                 value=1.5,
+                min_value=0.0,
+                help=(
+                    """
+                    numeric (>0); the hyperparameter of the precision prior; precValue
+                    is useful only when precPriorType='constant', as further explained below
+                    """  # noqa: E501
+                ),
             ),
         )
 
