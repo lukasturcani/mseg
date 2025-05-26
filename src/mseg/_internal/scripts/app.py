@@ -167,14 +167,52 @@ def main() -> None:
             tseg_rightmargin=st.number_input(
                 "tseg_rightmargin",
                 value=None,
+                help=(
+                    """
+                    the number of rightmost data points excluded for trend changepoint detection.
+                    That is,  no trend changepoints are allowed in the ending window/segment of length tseg_rightmargin.
+                    tseg_rightmargin must be an unitless integer-the number of time intervals/data points so that the
+                    time window in the original unit is tseg_rightmargin*deltat.
+                    """  # noqa: E501
+                ),
             ),
             method=st.selectbox(
                 "method",
                 ["bayes", "bic", "aic", "aicc", "hic", "bic0.25", "bic0.5"],
                 index=0,
+                help=(
+                    """
+                    method to formulat model posterior probability. Possible values are:
+                    * bayes - the full Bayesian formulation (this is the default)
+                    * bic -  approximation of posterior probability using the Bayesian information criterion (bic)
+                    * aic -  approximation of posterior probability using the Akaike information criterion (aic)
+                    * aicc - approximation of posterior probability using the corrected Akaike information criterion (aicc)
+                    * hic - approximation of  posterior probability using the Hannan-Quinn information criterion  (hic)
+                    * bic0.25 - approximation using the Bayesian information criterion adopted from Kim et al. (2016) <doi: 10.1016/j.jspi.2015.09.008>; bic0.25=n*ln(SSE)+0.25k*ln(n) with less complexity penelaty than the standard BIC.
+                    * bic0.50 - the same as above except that the penalty factor is 0.50.
+                    * bic1.5 - the same as above except that the penalty factor is 1.5.
+                    * bic2 - the same as above except that the penalty factor is 2.0.
+                    """  # noqa: E501
+                ),
             ),
-            detrend=st.checkbox("detrend"),
-            deseasonalize=st.checkbox("deseasonalize"),
+            detrend=st.checkbox(
+                "detrend",
+                help=(
+                    """
+                    if true, the input time series will be first de-trend before applying
+                    beast by removing a global trend
+                    """  # noqa: E501
+                ),
+            ),
+            deseasonalize=st.checkbox(
+                "deseasonalize",
+                help=(
+                    """
+                    if true, the input time series will be first de-seasonalized before applying
+                    beast by removing a global seasonal component
+                    """  # noqa: E501
+                ),
+            ),
             mcmc_seed=st.number_input(
                 "mcmc_seed",
                 value=1,
