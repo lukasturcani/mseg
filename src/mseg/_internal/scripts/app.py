@@ -339,6 +339,17 @@ def main() -> None:
 
     st.header("Trend Change Points")
     st.dataframe(_trend_change_points(output.trend))
+    trend_cp_probability_chart = (
+        alt.Chart(
+            _trend_change_point_probability(raw_output.time, output.trend)
+        )
+        .mark_line()
+        .encode(
+            x="time",
+            y="probability",
+        )
+    )
+    st.altair_chart(trend_cp_probability_chart)
     if output.season is not None:
         st.header("Seasonal Change Points")
         st.dataframe(_seasonal_change_points(output.season))
@@ -365,16 +376,19 @@ class ChangePoint:
 class TrendOutput(Protocol):
     cp: list[float]
     cpPr: list[float]  # noqa: N815
+    cpOccPr: list[float]  # noqa: N815
 
 
 class SeasonOputput(Protocol):
     cp: list[float]
     cpPr: list[float]  # noqa: N815
+    cpOccPr: list[float]  # noqa: N815
 
 
 class OutlierOutput(Protocol):
     cp: list[float]
     cpPr: list[float]  # noqa: N815
+    cpOccPr: list[float]  # noqa: N815
 
 
 @dataclass(slots=True)
@@ -396,6 +410,18 @@ def _trend_change_points(
     return cp_df.with_columns(
         pl.int_range(1, len(cp_df) + 1).alias("")
     ).select("", "time", "probability")
+
+
+def _trend_change_point_probability(
+    time: list[float],
+    trend: TrendOutput,
+) -> pl.DataFrame:
+    return pl.DataFrame(
+        {
+            "time": time,
+            "probability": trend.cpOccPr,
+        },
+    ).sort("time")
 
 
 def _seasonal_change_points(
