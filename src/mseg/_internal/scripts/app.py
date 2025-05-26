@@ -28,6 +28,7 @@ def main() -> None:
                 "start",
                 value=data_df.select(pl.col("time").min()).item(),
                 min_value=0.0,
+                help="The start time of the regular time series.",
             ),
             deltat=st.number_input(
                 "deltat",
