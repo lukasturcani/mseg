@@ -302,6 +302,19 @@ def main() -> None:
                     """  # noqa: E501
                 ),
             ),
+            ocp_minmax=st.slider(
+                "ocp_minmax",
+                min_value=0,
+                max_value=50,
+                step=1,
+                value=(0, 10),
+                help=(
+                    """
+                    the min and max numbers of outlier-type changepoints (ocp) allowed in the time series.
+                    Ocp refers to spikes or dips at isolated times that can't be modeled as trends or seasonal terms.
+                    """  # noqa: E501
+                ),
+            ),
         )
 
 
