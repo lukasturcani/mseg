@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
 import altair as alt
 import numpy as np
@@ -55,7 +55,7 @@ def main() -> None:
                     """  # noqa: E501
             ),
         )
-        raw_output = rb.beast(
+        raw_output = _rbeast(
             Y=data_df["power"].to_numpy(),
             start=st.number_input(
                 "start",
@@ -375,8 +375,71 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
 
 
 @st.cache_resource
-def _rbeast() -> Any:
-    pass
+def _rbeast(  # noqa: PLR0913
+    *,
+    Y: list[float],  # noqa: N803
+    start: float,
+    deltat: float,
+    season: Literal["harmonic", "dummy", "svd", "none"],
+    period: float,
+    scp_minmax: tuple[int, int],
+    sorder_minmax: tuple[int, int],
+    sseg_minlength: int | None,
+    sseg_leftmargin: int | None,
+    sseg_rightmargin: int | None,
+    tcp_minmax: tuple[int, int],
+    torder_minmax: tuple[int, int],
+    tseg_minlength: int | None,
+    tseg_leftmargin: int | None,
+    tseg_rightmargin: int | None,
+    method: Literal["bayes", "bic", "aic", "aicc", "hic", "bic0.25", "bic0.5"],
+    detrend: bool,
+    deseasonalize: bool,
+    mcmc_seed: int,
+    mcmc_burbin: int,
+    mcmc_chains: int,
+    mcmc_thin: int,
+    mcmc_samples: int,
+    precValue: float,  # noqa: N803
+    precPriorType: Literal[  # noqa: N803
+        "componentwise", "uniform", "constant", "orderwise"
+    ],
+    hasOutlier: bool,  # noqa: N803
+    ocp_minmax: tuple[int, int],
+) -> Any:
+    return rb.beast(
+        Y=Y,
+        start=start,
+        deltat=deltat,
+        season=season,
+        period=period,
+        scp_minmax=scp_minmax,
+        sorder_minmax=sorder_minmax,
+        sseg_minlength=sseg_minlength,
+        sseg_leftmargin=sseg_leftmargin,
+        sseg_rightmargin=sseg_rightmargin,
+        tcp_minmax=tcp_minmax,
+        torder_minmax=torder_minmax,
+        tseg_minlength=tseg_minlength,
+        tseg_leftmargin=tseg_leftmargin,
+        tseg_rightmargin=tseg_rightmargin,
+        method=method,
+        detrend=detrend,
+        deseasonalize=deseasonalize,
+        mcmc_seed=mcmc_seed,
+        mcmc_burbin=mcmc_burbin,
+        mcmc_chains=mcmc_chains,
+        mcmc_thin=mcmc_thin,
+        mcmc_samples=mcmc_samples,
+        precValue=precValue,
+        precPriorType=precPriorType,
+        hasOutlier=hasOutlier,
+        ocp_minmax=ocp_minmax,
+        print_param=False,
+        print_progress=False,
+        print_warning=False,
+        quiet=True,
+    )
 
 
 @dataclass(slots=True)
