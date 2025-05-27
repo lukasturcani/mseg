@@ -376,7 +376,6 @@ def main() -> None:
             "side": "right",
         },
     )
-    st.plotly_chart(fig)
 
     if output.season is not None:
         st.header("Seasonal Change Points")
@@ -384,6 +383,9 @@ def main() -> None:
     if output.outlier is not None:
         st.header("Outlier Change Points")
         st.dataframe(_outlier_change_points(output.outlier))
+
+    st.header("Results Figure")
+    st.plotly_chart(fig)
 
 
 def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
