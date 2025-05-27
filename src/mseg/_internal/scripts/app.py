@@ -344,7 +344,6 @@ def main() -> None:
     tcps = _trend_change_points(output.trend)
     st.dataframe(tcps)
 
-    tcp_probs = _trend_change_point_probability(raw_output.time, output.trend)
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
@@ -357,14 +356,44 @@ def main() -> None:
     )
     fig.add_trace(
         go.Scatter(
-            x=tcp_probs["time"],
-            y=tcp_probs["probability"],
+            x=raw_output.time,
+            y=output.trend.cpOccPr,
             mode="lines",
             name="tcp prob",
             yaxis="y2",
         )
     )
-    _draw_change_points(fig, tcps)
+    _draw_change_points(fig, tcps, "tcps")
+
+    if output.season is not None:
+        st.header("Seasonal Change Points")
+        scps = _seasonal_change_points(output.season)
+        st.dataframe(scps)
+        fig.add_trace(
+            go.Scatter(
+                x=raw_output.time,
+                y=output.season.cpOccPr,
+                mode="lines",
+                name="scp prob",
+                yaxis="y2",
+            )
+        )
+        _draw_change_points(fig, scps, "scps")
+    if output.outlier is not None:
+        st.header("Outlier Change Points")
+        ocps = _outlier_change_points(output.outlier)
+        st.dataframe(ocps)
+        fig.add_trace(
+            go.Scatter(
+                x=raw_output.time,
+                y=output.outlier.cpOccPr,
+                mode="lines",
+                name="ocp prob",
+                yaxis="y2",
+            )
+        )
+        _draw_change_points(fig, ocps, "ocps")
+
     fig.update_layout(
         xaxis={
             "title": "time",
@@ -378,14 +407,6 @@ def main() -> None:
             "side": "right",
         },
     )
-
-    if output.season is not None:
-        st.header("Seasonal Change Points")
-        st.dataframe(_seasonal_change_points(output.season))
-    if output.outlier is not None:
-        st.header("Outlier Change Points")
-        st.dataframe(_outlier_change_points(output.outlier))
-
     st.header("Results Figure")
     st.plotly_chart(fig)
 
@@ -399,7 +420,7 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
     return None
 
 
-def _draw_change_points(fig: go.Figure, tcps: pl.DataFrame) -> None:
+def _draw_change_points(fig: go.Figure, tcps: pl.DataFrame, name: str) -> None:
     x_vals = []
     y_vals = []
     for row in tcps.iter_rows(named=True):
@@ -411,7 +432,7 @@ def _draw_change_points(fig: go.Figure, tcps: pl.DataFrame) -> None:
             x=x_vals,
             y=y_vals,
             mode="lines",
-            name="tcps",
+            name=name,
             yaxis="y2",
             line={"dash": "dash"},
         )
@@ -529,18 +550,6 @@ def _trend_change_points(
     return cp_df.with_columns(
         pl.int_range(1, len(cp_df) + 1).alias("")
     ).select("", "time", "probability")
-
-
-def _trend_change_point_probability(
-    time: list[float],
-    trend: TrendOutput,
-) -> pl.DataFrame:
-    return pl.DataFrame(
-        {
-            "time": time,
-            "probability": trend.cpOccPr,
-        },
-    ).sort("time")
 
 
 def _seasonal_change_points(
