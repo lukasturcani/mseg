@@ -506,12 +506,6 @@ def _rbeast(  # noqa: PLR0913
     )
 
 
-@dataclass(slots=True)
-class ChangePoint:
-    location: float
-    probability: float
-
-
 class Output(Protocol):
     cp: list[float]
     cpPr: list[float]  # noqa: N815
