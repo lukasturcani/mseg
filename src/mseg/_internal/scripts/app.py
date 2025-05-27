@@ -359,7 +359,7 @@ def main() -> None:
             x=tcp_probs["time"],
             y=tcp_probs["probability"],
             mode="lines",
-            name="probability",
+            name="tcp prob",
             yaxis="y2",
         )
     )
