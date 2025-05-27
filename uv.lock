@@ -290,6 +290,7 @@ dependencies = [
     { name = "rbeast" },
     { name = "ruptures" },
     { name = "streamlit" },
+    { name = "watchdog" },
 ]
 
 [package.dev-dependencies]
@@ -301,7 +302,6 @@ dev = [
     { name = "ruff" },
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
-    { name = "watchdog" },
 ]
 
 [package.metadata]
@@ -312,6 +312,7 @@ requires-dist = [
     { name = "rbeast", specifier = ">=0.1.23" },
     { name = "ruptures", specifier = ">=1.1.9" },
     { name = "streamlit", specifier = ">=1.45.1" },
+    { name = "watchdog", specifier = ">=6.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -323,7 +324,6 @@ dev = [
     { name = "ruff" },
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
-    { name = "watchdog", specifier = ">=6.0.0" },
 ]
 
 [[package]]
