@@ -1,6 +1,7 @@
 from collections.abc import Sequence
 
 import plotly.express as px
+import polars as pl
 import ruptures as rpt
 import streamlit as st
 from plotly import graph_objects as go
@@ -46,6 +47,15 @@ def main() -> None:
             ),
         )
     breakpoints = data_df["time"][breakpoint_idxs[:-1]]
+    st.header("Breakpoints")
+    st.dataframe(
+        pl.DataFrame(
+            {
+                "": list(range(1, len(breakpoints) + 1)),
+                "time": breakpoints,
+            }
+        )
+    )
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
