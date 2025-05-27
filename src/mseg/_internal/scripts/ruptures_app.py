@@ -12,6 +12,7 @@ def main() -> None:
     data_df = parse_data_file(data_file.getvalue().decode()).sort("time")
     with st.sidebar:
         st.header("Parameters")
+        print(rpt.Pelt)
         breakpoints = rpt.Pelt(
             model=st.selectbox(
                 "model",
