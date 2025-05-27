@@ -41,13 +41,36 @@ def main() -> None:
             signal=data_df["power"].to_numpy(),
             pen=st.number_input(
                 "pen",
-                value=2000,
+                value=200,
                 help="penalty value",
             ),
         )
     breakpoints = data_df["time"][breakpoint_idxs[:-1]]
     fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=data_df["time"].to_numpy(),
+            y=data_df["power"].to_numpy(),
+            mode="lines",
+            name="power",
+            yaxis="y",
+        )
+    )
     _draw_breakpoints(fig, breakpoints, "breakpoints")
+    fig.update_layout(
+        xaxis={
+            "title": "time",
+        },
+        yaxis={
+            "title": "power",
+        },
+        yaxis2={
+            "overlaying": "y",
+            "side": "right",
+        },
+    )
+    st.header("Results Figure")
+    st.plotly_chart(fig)
 
 
 def _draw_breakpoints(
@@ -60,15 +83,17 @@ def _draw_breakpoints(
     for time in breakpoints:
         x_vals.extend([time, time, None])
         y_vals.extend([0, 1, None])
-
     fig.add_trace(
         go.Scatter(
             x=x_vals,
             y=y_vals,
             mode="lines",
             name=name,
+            line={
+                "color": "red",
+                "dash": "dash",
+            },
             yaxis="y2",
-            line={"dash": "dash"},
         )
     )
 
