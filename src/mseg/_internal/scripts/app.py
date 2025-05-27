@@ -341,7 +341,8 @@ def main() -> None:
         output.outlier = raw_output.outlier
 
     st.header("Trend Change Points")
-    st.dataframe(_trend_change_points(output.trend))
+    tcps = _trend_change_points(output.trend)
+    st.dataframe(tcps)
 
     tcp_probs = _trend_change_point_probability(raw_output.time, output.trend)
     fig = go.Figure()
@@ -363,6 +364,7 @@ def main() -> None:
             yaxis="y2",
         )
     )
+    _draw_change_points(fig, tcps)
     fig.update_layout(
         xaxis={
             "title": "time",
@@ -395,6 +397,25 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
     if all_close:
         return ref
     return None
+
+
+def _draw_change_points(fig: go.Figure, tcps: pl.DataFrame) -> None:
+    x_vals = []
+    y_vals = []
+    for row in tcps.iter_rows(named=True):
+        x_vals.extend([row["time"], row["time"], None])
+        y_vals.extend([0, 1, None])
+
+    fig.add_trace(
+        go.Scatter(
+            x=x_vals,
+            y=y_vals,
+            mode="lines",
+            name="tcps",
+            yaxis="y2",
+            line={"dash": "dash"},
+        )
+    )
 
 
 @st.cache_resource
