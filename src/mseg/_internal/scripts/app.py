@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 import altair as alt
 import numpy as np
@@ -372,6 +372,11 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
     if all_close:
         return ref
     return None
+
+
+@st.cache_data
+def _rbeast() -> Any:
+    pass
 
 
 @dataclass(slots=True)
