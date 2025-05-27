@@ -323,11 +323,6 @@ def main() -> None:
                     """  # noqa: E501
                 ),
             ),
-            print_param=False,
-            print_progress=False,
-            print_warning=False,
-            quiet=True,
-            dump_ci=False,
         )
     output = RBeastOutput(
         trend=raw_output.trend,
