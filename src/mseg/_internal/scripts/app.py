@@ -3,6 +3,7 @@ from typing import Any, Literal, Protocol
 
 import altair as alt
 import numpy as np
+import numpy.typing as npt
 import polars as pl
 import Rbeast as rb  # noqa: N813
 import streamlit as st
@@ -105,6 +106,7 @@ def main() -> None:
             sseg_minlength=st.number_input(
                 "sseg_minlength",
                 value=None,
+                step=1,
                 help=(
                     "the min length of the segment for the seasonal component "
                     "i.e., the min distance between neighorbing changepoints)"
@@ -113,6 +115,7 @@ def main() -> None:
             sseg_leftmargin=st.number_input(
                 "sseg_leftmargin",
                 value=None,
+                step=1,
                 help=(
                     """
                     the number of leftmost data points excluded for seasonal changepoint detection.
@@ -126,6 +129,7 @@ def main() -> None:
             sseg_rightmargin=st.number_input(
                 "sseg_rightmargin",
                 value=None,
+                step=1,
                 help=(
                     """
                     the number of rightmost data points excluded for seasonal changepoint detection.
@@ -161,6 +165,7 @@ def main() -> None:
             tseg_minlength=st.number_input(
                 "tseg_minlength",
                 value=None,
+                step=1,
                 help=(
                     """
                     the min length of the segment for the trend component (i.e.,
@@ -171,6 +176,7 @@ def main() -> None:
             tseg_leftmargin=st.number_input(
                 "tseg_leftmargin",
                 value=None,
+                step=1,
                 help=(
                     """
                     the number of leftmost data points excluded for trend changepoint detection.
@@ -183,6 +189,7 @@ def main() -> None:
             tseg_rightmargin=st.number_input(
                 "tseg_rightmargin",
                 value=None,
+                step=1,
                 help=(
                     """
                     the number of rightmost data points excluded for trend changepoint detection.
@@ -372,7 +379,7 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
 @st.cache_resource
 def _rbeast(  # noqa: PLR0913
     *,
-    Y: list[float],  # noqa: N803
+    Y: npt.NDArray[np.float64],  # noqa: N803
     start: float,
     deltat: float,
     season: Literal["harmonic", "dummy", "svd", "none"],
