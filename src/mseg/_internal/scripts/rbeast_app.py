@@ -24,7 +24,6 @@ def main() -> None:
         return
     st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
     st.write(data_df)
-
     chart = px.line(data_df, x="time", y="power")
     st.plotly_chart(chart)
 
@@ -341,7 +340,7 @@ def main() -> None:
         output.outlier = raw_output.outlier
 
     st.header("Trend Change Points")
-    tcps = _trend_change_points(output.trend)
+    tcps = _change_points(output.trend)
     st.dataframe(tcps)
 
     fig = go.Figure()
@@ -367,7 +366,7 @@ def main() -> None:
 
     if output.season is not None:
         st.header("Seasonal Change Points")
-        scps = _seasonal_change_points(output.season)
+        scps = _change_points(output.season)
         st.dataframe(scps)
         fig.add_trace(
             go.Scatter(
@@ -381,7 +380,7 @@ def main() -> None:
         _draw_change_points(fig, scps, "scps")
     if output.outlier is not None:
         st.header("Outlier Change Points")
-        ocps = _outlier_change_points(output.outlier)
+        ocps = _change_points(output.outlier)
         st.dataframe(ocps)
         fig.add_trace(
             go.Scatter(
@@ -513,19 +512,7 @@ class ChangePoint:
     probability: float
 
 
-class TrendOutput(Protocol):
-    cp: list[float]
-    cpPr: list[float]  # noqa: N815
-    cpOccPr: list[float]  # noqa: N815
-
-
-class SeasonOputput(Protocol):
-    cp: list[float]
-    cpPr: list[float]  # noqa: N815
-    cpOccPr: list[float]  # noqa: N815
-
-
-class OutlierOutput(Protocol):
+class Output(Protocol):
     cp: list[float]
     cpPr: list[float]  # noqa: N815
     cpOccPr: list[float]  # noqa: N815
@@ -533,46 +520,18 @@ class OutlierOutput(Protocol):
 
 @dataclass(slots=True)
 class RBeastOutput:
-    trend: TrendOutput
-    season: SeasonOputput | None = None
-    outlier: OutlierOutput | None = None
+    trend: Output
+    season: Output | None = None
+    outlier: Output | None = None
 
 
-def _trend_change_points(
-    trend: TrendOutput,
+def _change_points(
+    output: Output,
 ) -> pl.DataFrame:
     cp_df = pl.DataFrame(
         {
-            "time": trend.cp,
-            "probability": trend.cpPr,
-        },
-    ).sort("time")
-    return cp_df.with_columns(
-        pl.int_range(1, len(cp_df) + 1).alias("")
-    ).select("", "time", "probability")
-
-
-def _seasonal_change_points(
-    season: SeasonOputput,
-) -> pl.DataFrame:
-    cp_df = pl.DataFrame(
-        {
-            "time": season.cp,
-            "probability": season.cpPr,
-        },
-    ).sort("time")
-    return cp_df.with_columns(
-        pl.int_range(1, len(cp_df) + 1).alias("")
-    ).select("", "time", "probability")
-
-
-def _outlier_change_points(
-    outlier: OutlierOutput,
-) -> pl.DataFrame:
-    cp_df = pl.DataFrame(
-        {
-            "time": outlier.cp,
-            "probability": outlier.cpPr,
+            "time": output.cp,
+            "probability": output.cpPr,
         },
     ).sort("time")
     return cp_df.with_columns(

@@ -1,3 +1,4 @@
+import plotly.express as px
 import ruptures as rpt
 import streamlit as st
 
@@ -10,10 +11,13 @@ def main() -> None:
     if data_file is None:
         return
     data_df = parse_data_file(data_file.getvalue().decode()).sort("time")
+    st.write(data_df)
+    chart = px.line(data_df, x="time", y="power")
+    st.plotly_chart(chart)
+
     with st.sidebar:
         st.header("Parameters")
-        print(rpt.Pelt)
-        breakpoints = rpt.Pelt(
+        breakpoint_idxs = rpt.Pelt(
             model=st.selectbox(
                 "model",
                 ["l1", "l2", "rbf"],
@@ -38,6 +42,7 @@ def main() -> None:
                 help="penalty value",
             ),
         )
+        breakpoints = data_df["time"][breakpoint_idxs[:-1]]
 
 
 if __name__ == "__main__":
