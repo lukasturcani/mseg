@@ -29,7 +29,7 @@ def main() -> None:
 
     with st.sidebar:
         st.header("Parameters")
-        season = st.selectbox(
+        season: Literal["none", "harmonic", "dummy", "svd"] = st.selectbox(
             "season",
             [
                 "none",
