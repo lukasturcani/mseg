@@ -351,7 +351,7 @@ def main() -> None:
             y=raw_output.data,
             mode="lines",
             name="power",
-            yaxis="y2",
+            yaxis="y",
         )
     )
     fig.add_trace(
@@ -360,11 +360,24 @@ def main() -> None:
             y=tcp_probs["probability"],
             mode="lines",
             name="probability",
-            yaxis="y",
+            yaxis="y2",
         )
     )
-
+    fig.update_layout(
+        xaxis={
+            "title": "time",
+        },
+        yaxis={
+            "title": "power",
+        },
+        yaxis2={
+            "title": "probability",
+            "overlaying": "y",
+            "side": "right",
+        },
+    )
     st.plotly_chart(fig)
+
     if output.season is not None:
         st.header("Seasonal Change Points")
         st.dataframe(_seasonal_change_points(output.season))
