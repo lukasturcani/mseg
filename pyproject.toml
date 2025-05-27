@@ -9,7 +9,6 @@ maintainers = [
 ]
 
 dependencies = [
-    "altair>=5.5.0",
     "numpy<2",
     "plotly>=6.1.1",
     "polars>=1.30.0",
