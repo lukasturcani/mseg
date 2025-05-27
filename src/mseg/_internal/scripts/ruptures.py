@@ -12,7 +12,7 @@ def main() -> None:
     data_df = parse_data_file(data_file.getvalue().decode()).sort("time")
     with st.sidebar:
         st.header("Parameters")
-        algo = rpt.Pelt(
+        breakpoints = rpt.Pelt(
             model=st.selectbox(
                 "model",
                 ["l1", "l2", "rbf"],
@@ -29,8 +29,8 @@ def main() -> None:
                 value=1,
                 help="subsamble (one every *jump* points)",
             ),
-        ).fit(data_df["power"].to_numpy())
-        breakpoints = algo.predict(
+        ).fit_predict(
+            signal=data_df["power"].to_numpy(),
             pen=st.number_input(
                 "pen",
                 value=2000,
