@@ -374,7 +374,7 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
     return None
 
 
-@st.cache_data
+@st.cache_resource
 def _rbeast() -> Any:
     pass
 
