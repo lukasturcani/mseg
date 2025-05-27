@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
-import altair as alt
 import numpy as np
 import numpy.typing as npt
+import plotly.express as px
 import polars as pl
 import Rbeast as rb  # noqa: N813
 import streamlit as st
+from plotly import graph_objects as go
 
 from mseg._internal.utils import parse_data_file
 
@@ -24,8 +25,8 @@ def main() -> None:
     st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
     st.write(data_df)
 
-    chart = alt.Chart(data_df).mark_line().encode(x="time", y="power")
-    st.altair_chart(chart)
+    chart = px.line(data_df, x="time", y="power")
+    st.plotly_chart(chart)
 
     with st.sidebar:
         st.header("Parameters")
@@ -341,24 +342,29 @@ def main() -> None:
 
     st.header("Trend Change Points")
     st.dataframe(_trend_change_points(output.trend))
-    trend_cp_probability_chart = (
-        alt.Chart(
-            _trend_change_point_probability(raw_output.time, output.trend)
-        )
-        .mark_line(
-            color="green",
-        )
-        .encode(
-            x="time",
-            y="probability",
+
+    tcp_probs = _trend_change_point_probability(raw_output.time, output.trend)
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=raw_output.time,
+            y=raw_output.data,
+            mode="lines",
+            name="power",
+            yaxis="y2",
         )
     )
-    if st.checkbox("Show original data", value=True):
-        trend_cp_probability_chart = alt.layer(
-            chart, trend_cp_probability_chart
-        ).resolve_scale(y="independent")
+    fig.add_trace(
+        go.Scatter(
+            x=tcp_probs["time"],
+            y=tcp_probs["probability"],
+            mode="lines",
+            name="probability",
+            yaxis="y",
+        )
+    )
 
-    st.altair_chart(trend_cp_probability_chart)
+    st.plotly_chart(fig)
     if output.season is not None:
         st.header("Seasonal Change Points")
         st.dataframe(_seasonal_change_points(output.season))
