@@ -419,10 +419,10 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
     return None
 
 
-def _draw_change_points(fig: go.Figure, tcps: pl.DataFrame, name: str) -> None:
+def _draw_change_points(fig: go.Figure, cps: pl.DataFrame, name: str) -> None:
     x_vals = []
     y_vals = []
-    for row in tcps.iter_rows(named=True):
+    for row in cps.iter_rows(named=True):
         x_vals.extend([row["time"], row["time"], None])
         y_vals.extend([0, 1, None])
 

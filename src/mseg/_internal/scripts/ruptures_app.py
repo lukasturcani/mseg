@@ -1,6 +1,9 @@
+from collections.abc import Sequence
+
 import plotly.express as px
 import ruptures as rpt
 import streamlit as st
+from plotly import graph_objects as go
 
 from mseg._internal.utils import parse_data_file
 
@@ -42,7 +45,32 @@ def main() -> None:
                 help="penalty value",
             ),
         )
-        breakpoints = data_df["time"][breakpoint_idxs[:-1]]
+    breakpoints = data_df["time"][breakpoint_idxs[:-1]]
+    fig = go.Figure()
+    _draw_breakpoints(fig, breakpoints, "breakpoints")
+
+
+def _draw_breakpoints(
+    fig: go.Figure,
+    breakpoints: Sequence[float],
+    name: str,
+) -> None:
+    x_vals = []
+    y_vals = []
+    for time in breakpoints:
+        x_vals.extend([time, time, None])
+        y_vals.extend([0, 1, None])
+
+    fig.add_trace(
+        go.Scatter(
+            x=x_vals,
+            y=y_vals,
+            mode="lines",
+            name=name,
+            yaxis="y2",
+            line={"dash": "dash"},
+        )
+    )
 
 
 if __name__ == "__main__":
