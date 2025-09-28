@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
 
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 import plotly.express as px
@@ -10,6 +11,13 @@ import streamlit as st
 from plotly import graph_objects as go
 
 from mseg._internal.utils import parse_data_file
+
+_original_stem = plt.Axes.stem
+plt.Axes.stem = lambda self, *args, **kwargs: _original_stem(  # type: ignore[method-assign]
+    self,
+    *args,
+    **{k: v for k, v in kwargs.items() if k != "use_line_collection"},
+)
 
 
 def main() -> None:
@@ -331,6 +339,9 @@ def main() -> None:
                 ),
             ),
         )
+
+    plt_fig, _ = rb.plot(raw_output)
+    st.pyplot(plt_fig)
     output = RBeastOutput(
         trend=raw_output.trend,
     )
