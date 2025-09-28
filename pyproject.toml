@@ -9,6 +9,7 @@ maintainers = [
 ]
 
 dependencies = [
+    "matplotlib>=3.10.6",
     "numpy<2",
     "plotly>=6.1.1",
     "polars>=1.30.0",
