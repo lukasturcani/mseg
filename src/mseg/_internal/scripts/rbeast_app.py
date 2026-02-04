@@ -421,7 +421,7 @@ def main() -> None:
     st.plotly_chart(fig)
 
 
-def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-3) -> float | None:
+def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-1) -> float | None:
     diffs = data["time"].diff().drop_nulls()
     ref = diffs[0]
     all_close = np.all(np.isclose(diffs.to_numpy(), ref, atol=tolerance))
