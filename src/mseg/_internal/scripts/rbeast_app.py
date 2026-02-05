@@ -20,18 +20,47 @@ plt.Axes.stem = lambda self, *args, **kwargs: _original_stem(  # type: ignore[me
 )
 
 
-def main() -> None:
+def main() -> None:  # noqa: PLR0915
     st.title("RBeast Change Point Detection")
     data_file = st.file_uploader("Choose a file")
     if data_file is None:
         return
     data_df = parse_data_file(data_file.getvalue().decode()).sort("time")
+    st.write(data_df)
     delta_t = _get_delta_t(data_df)
     if delta_t is None:
         st.error("Time delta between samples is not constant.")
+        col1, col2 = st.columns(2)
+        with col1:
+            expected_delta_t = st.number_input(
+                "Expected delta_t",
+                value=0.0,
+                help=(
+                    "The expected time interval between "
+                    "consecutive datapoints."
+                ),
+            )
+        with col2:
+            delta_t_tolerance = st.number_input(
+                "Tolerance",
+                value=0.1,
+                min_value=0.0,
+                help="Acceptable deviation from expected delta_t.",
+            )
+        if expected_delta_t > 0:
+            bad_rows = _find_bad_delta_t_rows(
+                data_df, expected_delta_t, delta_t_tolerance
+            )
+            if len(bad_rows) > 0:
+                st.warning(
+                    f"Found {len(bad_rows)} rows with delta_t "
+                    "outside tolerance:"
+                )
+                st.dataframe(bad_rows)
+            else:
+                st.success("No rows with delta_t outside tolerance found.")
         return
     st.success(f"Calculated DeltaT between samples is {delta_t:.2f}")
-    st.write(data_df)
     chart = px.line(data_df, x="time", y="power")
     st.plotly_chart(chart)
 
@@ -428,6 +457,29 @@ def _get_delta_t(data: pl.DataFrame, tolerance: float = 1e-1) -> float | None:
     if all_close:
         return ref
     return None
+
+
+def _find_bad_delta_t_rows(
+    data: pl.DataFrame, expected_delta_t: float, tolerance: float
+) -> pl.DataFrame:
+    diffs = data["time"].diff()
+    is_bad = ~np.isclose(diffs.to_numpy(), expected_delta_t, atol=tolerance)
+    is_bad[0] = False  # First row has no delta_t
+    bad_indices = np.where(is_bad)[0]
+    if len(bad_indices) == 0:
+        return pl.DataFrame(
+            {"row": [], "time": [], "delta_t": [], "deviation": []}
+        )
+    return pl.DataFrame(
+        {
+            "row": bad_indices + 1,  # 1-indexed for user display
+            "time": data["time"].gather(bad_indices).to_list(),
+            "delta_t": diffs.gather(bad_indices).to_list(),
+            "deviation": (
+                diffs.gather(bad_indices) - expected_delta_t
+            ).to_list(),
+        }
+    )
 
 
 def _draw_change_points(fig: go.Figure, cps: pl.DataFrame, name: str) -> None:
