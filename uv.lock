@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = "==3.12.*"
 
 [[package]]
@@ -399,6 +399,7 @@ dependencies = [
     { name = "polars" },
     { name = "rbeast" },
     { name = "ruptures" },
+    { name = "scipy" },
     { name = "streamlit" },
     { name = "watchdog" },
 ]
@@ -422,6 +423,7 @@ requires-dist = [
     { name = "polars", specifier = ">=1.30.0" },
     { name = "rbeast", specifier = ">=0.1.23" },
     { name = "ruptures", specifier = ">=1.1.9" },
+    { name = "scipy", specifier = ">=1.14.0" },
     { name = "streamlit", specifier = ">=1.45.1" },
     { name = "watchdog", specifier = ">=6.0.0" },
 ]
