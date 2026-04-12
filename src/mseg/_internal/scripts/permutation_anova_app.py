@@ -162,7 +162,7 @@ def _f_statistic(
     return float(stats.f_oneway(*samples).statistic)
 
 
-@st.cache_resource
+@st.cache_data
 def _permutation_anova(
     segments: tuple[npt.NDArray[np.float64], ...],
     *,
