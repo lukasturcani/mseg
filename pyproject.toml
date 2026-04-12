@@ -15,6 +15,7 @@ dependencies = [
     "polars>=1.30.0",
     "rbeast>=0.1.23",
     "ruptures>=1.1.9",
+    "scipy>=1.14.0",
     "streamlit>=1.45.1",
     "watchdog>=6.0.0",
 ]
@@ -92,6 +93,7 @@ module = [
   "plotly.*",
   "ruptures.*",
   "Rbeast.*",
+  "scipy.*",
 ]
 ignore_missing_imports = true
 
