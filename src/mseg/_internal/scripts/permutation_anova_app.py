@@ -41,8 +41,7 @@ def main() -> None:
             value=0,
             step=1,
             help=(
-                "Seed for the random number generator. "
-                "Set to 0 for no seed."
+                "Seed for the random number generator. Set to 0 for no seed."
             ),
         )
 
@@ -51,9 +50,7 @@ def main() -> None:
         return
 
     breakpoints = sorted(
-        float(b.strip())
-        for b in breakpoints_str.split(",")
-        if b.strip()
+        float(b.strip()) for b in breakpoints_str.split(",") if b.strip()
     )
     times = data_df["time"].to_numpy()
     power = data_df["power"].to_numpy()
@@ -75,8 +72,7 @@ def main() -> None:
 
     if len(segments) < 2:  # noqa: PLR2004
         st.error(
-            "Need at least 2 non-empty segments. "
-            "Adjust breakpoint times."
+            "Need at least 2 non-empty segments. Adjust breakpoint times."
         )
         return
 
@@ -173,9 +169,7 @@ def _permutation_anova(
     n_resamples: int,
     seed: int | None,
 ) -> Any:
-    rng = (
-        np.random.default_rng(seed) if seed is not None else None
-    )
+    rng = np.random.default_rng(seed) if seed is not None else None
     return stats.permutation_test(
         segments,
         _f_statistic,
