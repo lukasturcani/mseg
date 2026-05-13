@@ -1,33 +1,44 @@
+from itertools import combinations
 from typing import Any
 
 import numpy as np
 import numpy.typing as npt
 import plotly.express as px
+import polars as pl
 import streamlit as st
 from plotly import graph_objects as go
 from scipy import stats
 
-from mseg._internal.utils import parse_data_file
+from mseg._internal.utils import parse_tabular_data_file
 
 
-def main() -> None:
-    st.title("Permutation ANOVA")
+def main() -> None:  # noqa: PLR0915
+    st.title("Repeated-Measures Permutation ANOVA")
     data_file = st.file_uploader("Choose a file")
     if data_file is None:
         return
-    data_df = parse_data_file(data_file.getvalue().decode()).sort("time")
+    data_df = parse_tabular_data_file(data_file.getvalue().decode())
+    if data_df.is_empty():
+        st.error("File contains no data.")
+        return
+
+    subject_col = data_df.columns[0]
+    condition_cols = data_df.columns[1:]
+
+    st.header("Data")
     st.write(data_df)
-    chart = px.line(data_df, x="time", y="power")
-    st.plotly_chart(chart)
+
+    if len(condition_cols) < 2:  # noqa: PLR2004
+        st.error("Need at least 2 condition columns.")
+        return
 
     with st.sidebar:
         st.header("Parameters")
-        breakpoints_str = st.text_input(
-            "Breakpoint times",
-            help=(
-                "Comma-separated list of time values at which to "
-                "split the data into segments for comparison."
-            ),
+        selected_conditions = st.multiselect(
+            "Conditions to compare",
+            options=condition_cols,
+            default=list(condition_cols),
+            help="Pick at least 2 condition columns to include in the test.",
         )
         n_resamples = st.number_input(
             "n_resamples",
@@ -45,94 +56,52 @@ def main() -> None:
             ),
         )
 
-    if not breakpoints_str.strip():
-        st.info("Enter breakpoint times in the sidebar to define segments.")
+    if len(selected_conditions) < 2:  # noqa: PLR2004
+        st.info("Select at least 2 conditions in the sidebar.")
         return
 
-    breakpoints = sorted(
-        float(b.strip()) for b in breakpoints_str.split(",") if b.strip()
+    samples = tuple(
+        data_df[col].to_numpy().astype(np.float64)
+        for col in selected_conditions
     )
-    times = data_df["time"].to_numpy()
-    power = data_df["power"].to_numpy()
+    subjects = data_df[subject_col].to_list()
 
-    edges = [
-        float(times[0]),
-        *breakpoints,
-        float(times[-1]) + 1,
-    ]
-    segments: list[npt.NDArray[np.float64]] = []
-    segment_labels: list[str] = []
-    for i in range(len(edges) - 1):
-        mask = (times >= edges[i]) & (times < edges[i + 1])
-        seg = power[mask]
-        if len(seg) == 0:
-            continue
-        segments.append(seg)
-        segment_labels.append(f"[{edges[i]:.2f}, {edges[i + 1]:.2f})")
-
-    if len(segments) < 2:  # noqa: PLR2004
-        st.error(
-            "Need at least 2 non-empty segments. Adjust breakpoint times."
-        )
-        return
-
-    st.header("Segments")
-    for i, (label, seg) in enumerate(
-        zip(segment_labels, segments, strict=True)
-    ):
+    st.header("Conditions")
+    for label, values in zip(selected_conditions, samples, strict=True):
         st.write(
-            f"**Segment {i + 1}** {label}: "
-            f"n={len(seg)}, "
-            f"mean={seg.mean():.4f}, "
-            f"std={seg.std():.4f}"
+            f"**{label}**: n={len(values)}, "
+            f"mean={values.mean():.4f}, std={values.std(ddof=1):.4f}"
         )
 
-    seed = random_seed if random_seed != 0 else None
-    result = _permutation_anova(
-        tuple(segments),
-        n_resamples=n_resamples,
-        seed=seed,
-    )
-    st.header("Results")
-    st.write(f"**F-statistic:** {result.statistic:.4f}")
-    st.write(f"**p-value:** {result.pvalue:.6f}")
-
-    fig = go.Figure()
+    st.header("Per-Subject Trajectories")
+    traj_fig = go.Figure()
     colors = px.colors.qualitative.Plotly
-    for i, (label, seg_start, seg_end) in enumerate(
-        zip(
-            segment_labels,
-            edges[:-1],
-            edges[1:],
-            strict=True,
-        )
-    ):
-        mask = (times >= seg_start) & (times < seg_end)
-        fig.add_trace(
+    for i, subject in enumerate(subjects):
+        traj_fig.add_trace(
             go.Scatter(
-                x=times[mask],
-                y=power[mask],
-                mode="lines",
-                name=f"Segment {i + 1} {label}",
+                x=list(selected_conditions),
+                y=[float(values[i]) for values in samples],
+                mode="lines+markers",
+                name=str(subject),
                 line={"color": colors[i % len(colors)]},
             )
         )
-    for bp in breakpoints:
-        fig.add_vline(
-            x=bp,
-            line_dash="dash",
-            line_color="red",
-        )
-    fig.update_layout(
-        title=(
-            f"Permutation ANOVA: F={result.statistic:.4f}, "
-            f"p={result.pvalue:.6f}"
-        ),
-        xaxis={"title": "time"},
-        yaxis={"title": "power"},
+    traj_fig.update_layout(
+        xaxis={"title": "condition"},
+        yaxis={"title": "value"},
     )
-    st.header("Results Figure")
-    st.plotly_chart(fig)
+    st.plotly_chart(traj_fig)
+
+    seed = random_seed if random_seed != 0 else None
+    result = _rm_permutation_anova(
+        samples,
+        n_resamples=n_resamples,
+        seed=seed,
+    )
+
+    st.header("Results")
+    st.write(f"**F-statistic:** {result.statistic:.4f}")
+    st.write(f"**p-value:** {result.pvalue:.6f}")
 
     st.header("Null Distribution")
     null_fig = go.Figure()
@@ -155,28 +124,116 @@ def main() -> None:
     )
     st.plotly_chart(null_fig)
 
+    st.header("Pairwise Comparisons")
+    st.caption(
+        "Paired permutation tests on the differences within each rat, "
+        "with Holm-Bonferroni correction across all pairs."
+    )
+    pairs = list(combinations(range(len(selected_conditions)), 2))
+    raw_pvalues: list[float] = []
+    mean_diffs: list[float] = []
+    pair_labels: list[str] = []
+    for i, j in pairs:
+        a = samples[i]
+        b = samples[j]
+        pair_result = _paired_permutation_test(
+            a,
+            b,
+            n_resamples=n_resamples,
+            seed=seed,
+        )
+        raw_pvalues.append(float(pair_result.pvalue))
+        mean_diffs.append(float(np.mean(a - b)))
+        pair_labels.append(
+            f"{selected_conditions[i]} vs {selected_conditions[j]}"
+        )
+    adjusted = _holm_bonferroni(raw_pvalues)
+    pairwise_df = pl.DataFrame(
+        {
+            "comparison": pair_labels,
+            "mean_difference": mean_diffs,
+            "p_raw": raw_pvalues,
+            "p_holm": adjusted,
+            "significant_holm_0.05": [p < 0.05 for p in adjusted],  # noqa: PLR2004
+        }
+    )
+    st.write(pairwise_df)
 
-def _f_statistic(
-    *samples: npt.NDArray[np.float64],
-) -> float:
-    return float(stats.f_oneway(*samples).statistic)
+
+def _rm_anova_f(*samples: npt.NDArray[np.float64]) -> float:
+    data = np.stack(samples, axis=1)
+    n_subjects, n_conditions = data.shape
+    grand_mean = data.mean()
+    condition_means = data.mean(axis=0)
+    subject_means = data.mean(axis=1)
+
+    ss_condition = n_subjects * np.sum((condition_means - grand_mean) ** 2)
+    ss_subject = n_conditions * np.sum((subject_means - grand_mean) ** 2)
+    ss_total = np.sum((data - grand_mean) ** 2)
+    ss_error = ss_total - ss_condition - ss_subject
+
+    df_condition = n_conditions - 1
+    df_error = (n_subjects - 1) * (n_conditions - 1)
+
+    ms_condition = ss_condition / df_condition
+    ms_error = ss_error / df_error
+    return float(ms_condition / ms_error)
 
 
 @st.cache_data
-def _permutation_anova(
-    segments: tuple[npt.NDArray[np.float64], ...],
+def _rm_permutation_anova(
+    samples: tuple[npt.NDArray[np.float64], ...],
     *,
     n_resamples: int,
     seed: int | None,
 ) -> Any:
     rng = np.random.default_rng(seed) if seed is not None else None
     return stats.permutation_test(
-        segments,
-        _f_statistic,
+        samples,
+        _rm_anova_f,
         n_resamples=n_resamples,
+        permutation_type="samples",
         alternative="greater",
         random_state=rng,
     )
+
+
+def _mean_difference(
+    a: npt.NDArray[np.float64],
+    b: npt.NDArray[np.float64],
+) -> float:
+    return float(np.mean(a - b))
+
+
+@st.cache_data
+def _paired_permutation_test(
+    a: npt.NDArray[np.float64],
+    b: npt.NDArray[np.float64],
+    *,
+    n_resamples: int,
+    seed: int | None,
+) -> Any:
+    rng = np.random.default_rng(seed) if seed is not None else None
+    return stats.permutation_test(
+        (a, b),
+        _mean_difference,
+        n_resamples=n_resamples,
+        permutation_type="samples",
+        alternative="two-sided",
+        random_state=rng,
+    )
+
+
+def _holm_bonferroni(pvalues: list[float]) -> list[float]:
+    m = len(pvalues)
+    order = sorted(range(m), key=lambda i: pvalues[i])
+    adjusted = [0.0] * m
+    running_max = 0.0
+    for rank, idx in enumerate(order):
+        scaled = (m - rank) * pvalues[idx]
+        running_max = max(running_max, scaled)
+        adjusted[idx] = min(running_max, 1.0)
+    return adjusted
 
 
 if __name__ == "__main__":
